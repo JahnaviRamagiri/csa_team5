@@ -10,6 +10,6 @@ public class Word extends BitSet {
 	private static final long serialVersionUID = 1L;
 
 	public Word() {
-		super(18);
+		super(16);
 	}
 }
