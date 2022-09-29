@@ -1,5 +1,7 @@
 package csci6461;
 
+import java.util.BitSet;
+
 public class Simulator {
 	
 	private static final Simulator INSTANCE = new Simulator();
@@ -95,21 +97,36 @@ public class Simulator {
 		Util.bitsetDeepCopy(w, 16, r, r.getSize());
 		// TODO: update GUI
 	}
-	
+	public void setRegister(Register r, BitSet src) {
+		int srcData = Util.bitSet2Int(src);
+		setRegister(r, srcData);
+		// TODO Auto-generated method stub
+		
+	}
 	public void operation(byte opcode, byte r, byte i, byte ix, int address) {
-		int ea = calculateEA(i, ix, address);
+		int ea;
 		switch (opcode) {
 		case OpCodes.LDR:
+			ea = calculateEA(i, ix, address);
 			setRegister(MAR, ea);
+			int dataAddr = Util.bitSet2Int(MAR);
+			int data = Util.bitSet2Int(memory.read(dataAddr));
+			setRegister(MBR, data);
+			switch (r) {
+			case 0:
+				setRegister(R0, MBR);
 			
+			}
 		case OpCodes.STR:
 			
 		case OpCodes.LDA:
 			
 		case OpCodes.LDX:
-			
+			ea = calculateEA((byte)0, ix, address);
 		case OpCodes.STX:
 		}
 		
 	}
+
+	
 }
