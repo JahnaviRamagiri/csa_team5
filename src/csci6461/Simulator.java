@@ -1,34 +1,64 @@
 package csci6461;
 
 public class Simulator {
+	
+	private static final Simulator INSTANCE = new Simulator();
+	
+	private Register R0;
+	private Register R1;
+	private Register R2;
+	private Register R3;
+	
+	private Register X1;
+	private Register X2;
+	private Register X3;
+	
+	private Register PC;
+	private Register IR;
+	private Register CC;
+	private Register MAR;
+	private Register MBR;
+	private Register MFR;
+	
+	private Register OPCODE;
+	private Register IX;
+	private Register R;
+	private Register I;
+	private Register ADDR;
+	
 	private Simulator() {
 		// initialize registers
-		Register R0 = new Register(16);
-		Register R1 = new Register(16);
-		Register R2 = new Register(16);
-		Register R3 = new Register(16);
+		R0 = new Register(16);
+		R1 = new Register(16);
+		R2 = new Register(16);
+		R3 = new Register(16);
 		
-		Register X1 = new Register(16);
-		Register X2 = new Register(16);
-		Register X3 = new Register(16);
+		X1 = new Register(16);
+		X2 = new Register(16);
+		X3 = new Register(16);
 		
-		Register PC = new Register(12);
-		Register IR = new Register(16);
-		Register CC = new Register(4);
+		PC = new Register(12);
+		IR = new Register(16);
+		CC = new Register(4);
 		
-		Register MAR = new Register(12);
-		Register MBR = new Register(16);
-//		Register MSR = new Register(18);
-		Register MFR = new Register(4);
+		MAR = new Register(12);
+		MBR = new Register(16);
+//		MSR = new Register(18);
+		MFR = new Register(4);
 		
-		Register OPCODE = new Register(6);
-		Register IX = new Register(2);
-		Register R = new Register(2);
-		Register I = new Register(1);
-		Register ADDR = new Register(5);
+		OPCODE = new Register(6);
+		IX = new Register(2);
+		R = new Register(2);
+		I = new Register(1);
+		ADDR = new Register(5);
 		
 		
 	}
+	
+	public static Simulator getInstance() {
+		return INSTANCE;
+	}
+	
 	private static Memory memory = Memory.getInstance();
 	
 	public static int calculateEA(byte i, byte ix, int address) {
@@ -58,5 +88,28 @@ public class Simulator {
 		}
 
 		return ea;
+	}
+	
+	public void setRegister(Register r, int content) {
+		Word w = (Word) Util.int2BitSet(content);
+		Util.bitsetDeepCopy(w, 16, r, r.getSize());
+		// TODO: update GUI
+	}
+	
+	public void operation(byte opcode, byte r, byte i, byte ix, int address) {
+		int ea = calculateEA(i, ix, address);
+		switch (opcode) {
+		case OpCodes.LDR:
+			setRegister(MAR, ea);
+			
+		case OpCodes.STR:
+			
+		case OpCodes.LDA:
+			
+		case OpCodes.LDX:
+			
+		case OpCodes.STX:
+		}
+		
 	}
 }
