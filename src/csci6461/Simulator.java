@@ -27,8 +27,6 @@ public class Simulator {
 	private Register R;
 	private Register I;
 	private Register ADDR;
-//	static Register[] gpr;
-//	static Register[] ixr;
 
 	
 	private Simulator() {
@@ -48,7 +46,6 @@ public class Simulator {
 		
 		MAR = new Register(12);
 		MBR = new Register(16);
-//		MSR = new Register(18);
 		MFR = new Register(4);
 		
 		OPCODE = new Register(6);
@@ -57,9 +54,6 @@ public class Simulator {
 		I = new Register(1);
 		ADDR = new Register(5);
 		
-//		gpr = new Register[3]; 
-//		ixr = new Register[3]; 
-//		
 		
 	}
 	
@@ -98,10 +92,48 @@ public class Simulator {
 		return ea;
 	}
 	
+	private String regName2Str(Register r) {
+		if (r == R0) {
+			return "R0";
+		}
+		if (r == R1) {
+			return "R1";
+		}
+		if (r == R2) {
+			return "R2";
+		}
+		if (r == R3) {
+			return "R3";
+		}
+		if (r == X1) {
+			return "X1";
+		}
+		if (r == X2) {
+			return "X2";
+		}
+		if (r == X3) {
+			return "X3";
+		}
+		if (r == PC) {
+			return "PC";
+		}
+		if (r == MAR) {
+			return "MAR";
+		}
+		if (r == MBR) {
+			return "MBR";
+		}
+		if (r == IR) {
+			return "IR";
+		}
+		return null;
+		
+	}
+	
 	public void setRegister(Register r, int content) {
 		Word w = (Word) Util.int2BitSet(content);
 		Util.bitsetDeepCopy(w, 16, r, r.getSize());
-		
+		MainFrame.updateUI(regName2Str(r), r);
 		// TODO: update GUI
 	}
 	public void setRegister(Register r, BitSet src) {

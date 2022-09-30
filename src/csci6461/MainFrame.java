@@ -30,22 +30,57 @@ public class MainFrame extends JFrame {
 	
 	
 	private JPanel contentPane;
-	private JTextField textField_GPR0;
-	private JTextField textField_GPR1;
-	private JTextField textField_GPR2;
-	private JTextField textField_input;
-	private JTextField textField_GPR3;
-	private JTextField textField_IXR1;
-	private JTextField textField_IXR2;
-	private JTextField textField_IXR3;
-	private JTextField textField_PC;
-	private JTextField textField_MAR;
-	private JTextField textField_MBR;
-	private JTextField textField_IR;
+	private static JTextField textField_GPR0;
+	private static JTextField textField_GPR1;
+	private static JTextField textField_GPR2;
+	private static JTextField textField_input;
+	private static JTextField textField_GPR3;
+	private static JTextField textField_IXR1;
+	private static JTextField textField_IXR2;
+	private static JTextField textField_IXR3;
+	private static JTextField textField_PC;
+	private static JTextField textField_MAR;
+	private static JTextField textField_MBR;
+	private static JTextField textField_IR;
+	
+	private static JTextField getRegisterGUI(String regStr) {
+		if (regStr == "R0") {
+			return textField_GPR0;
+		}
+		if (regStr == "R1") {
+			return textField_GPR1;
+		}
+		if (regStr == "R2") {
+			return textField_GPR2;
+		}
+		if (regStr == "R3") {
+			return textField_GPR3;
+		}
+		if (regStr == "X1") {
+			return textField_IXR1;
+		}
+		if (regStr == "X2") {
+			return textField_IXR2;
+		}
+		if (regStr == "X3") {
+			return textField_IXR3;
+		}
+		if (regStr == "PC") {
+			return textField_PC;
+		}
+		if (regStr == "MAR") {
+			return textField_MAR;
+		}
+		if (regStr == "MBR") {
+			return textField_MBR;
+		}
+		if (regStr == "IR") {
+			return textField_IR;
+		}
+		return null;
+	}
 	
 	static void load_instruction(String input) {
-		
-//		String st1=input.getText();
 		
 		
 		pc = Integer.parseInt(input,2);
@@ -99,9 +134,10 @@ public class MainFrame extends JFrame {
 //	}
 
 	
-//	public static void updateUI() {
-//		
-//	}
+	public static void updateUI(String regStr, BitSet value) {
+		JTextField reg = getRegisterGUI(regStr);
+		reg.setText(Integer.toBinaryString(Util.bitSet2Int(value)));
+	}
 		
 
 	
@@ -345,7 +381,6 @@ public class MainFrame extends JFrame {
 				ir_decode(ir);
 				// operation
 				Simulator.getInstance().operation(OPCODE, R, I, IX, ADDR);
-//				getRegister()
 				
 			}
 		});
