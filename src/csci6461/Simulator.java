@@ -112,18 +112,108 @@ public class Simulator {
 			int dataAddr = Util.bitSet2Int(MAR);
 			int data = Util.bitSet2Int(memory.read(dataAddr));
 			setRegister(MBR, data);
+			
+			switch (r) {
+			case 0:
+				setRegister(R0, MBR);
+				
+			case 01:
+				setRegister(R1, MBR);
+			
+			case 10:
+				setRegister(R2, MBR);
+				
+			case 11:
+				setRegister(R3, MBR);
+				
+			}
+			
+		case OpCodes.STR:
+		     ea = calculateEA(i, ix, address); 
+		     setRegister(MAR, ea);
+		     
+		     switch (r) {
+				case 0:
+					setRegister(MBR, R0);
+					
+				case 01:
+					setRegister(MBR, R1);
+					
+				case 10:
+					setRegister(MBR, R2);	
+				
+				case 11:
+					setRegister(MBR, R3);	
+					
+				}
+		   //  memory.write(MBR); register MBR to word
+		     
+		     
+		case OpCodes.LDA:
+			
+			ea = calculateEA(i, ix, address);
+			setRegister(MAR, ea);
+			
+			setRegister(MBR, ea);
+			switch (r) {
+			case 0:
+				setRegister(R0, MBR);
+				
+			case 01:
+				setRegister(R1, MBR);
+			
+			case 10:
+				setRegister(R2, MBR);
+				
+			case 11:
+				setRegister(R3, MBR);
+			
+			
+			}
+			
+			
+			
+		case OpCodes.LDX:
+			ea = calculateEA((byte)0, ix, address);
+			setRegister(MAR, ea);
+			int dataAddr_1 = Util.bitSet2Int(MAR);
+			int data_1 = Util.bitSet2Int(memory.read(dataAddr_1));
+			setRegister(MBR, data_1);
 			switch (r) {
 			case 0:
 				setRegister(R0, MBR);
 			
+			case 01:
+				setRegister(R1, MBR);
+			
+			case 10:
+				setRegister(R2, MBR);
+				
+			case 11:
+				setRegister(R3, MBR);
+			
 			}
-		case OpCodes.STR:
 			
-		case OpCodes.LDA:
-			
-		case OpCodes.LDX:
-			ea = calculateEA((byte)0, ix, address);
 		case OpCodes.STX:
+			ea = calculateEA((byte)0, ix, address);
+			setRegister(MAR, ea);
+		     
+		     switch (r) {
+				case 0:
+					setRegister(MBR, R0);
+					
+				case 01:
+					setRegister(MBR, R1);
+					
+				case 10:
+					setRegister(MBR, R2);	
+				
+				case 11:
+					setRegister(MBR, R3);
+				
+				}
+		   //  memory.write(MBR); register MBR to word
+			
 		}
 		
 	}
