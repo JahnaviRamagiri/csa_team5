@@ -4,6 +4,7 @@
 package csci6461;
 
 import java.util.Arrays;
+import java.util.BitSet;
 
 /**
  * Represents the memory of the CISC simulator, contains
@@ -31,7 +32,7 @@ public class Memory {
 		
 	}
 	
-	public void write(Word word, int address) {
-		memory[address] = word;
+	public void write(Word inp, int address) {
+		memory[address] = inp;
 	}
 }

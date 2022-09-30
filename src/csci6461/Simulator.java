@@ -27,6 +27,9 @@ public class Simulator {
 	private Register R;
 	private Register I;
 	private Register ADDR;
+//	static Register[] gpr;
+//	static Register[] ixr;
+
 	
 	private Simulator() {
 		// initialize registers
@@ -54,6 +57,9 @@ public class Simulator {
 		I = new Register(1);
 		ADDR = new Register(5);
 		
+//		gpr = new Register[3]; 
+//		ixr = new Register[3]; 
+//		
 		
 	}
 	
@@ -95,6 +101,7 @@ public class Simulator {
 	public void setRegister(Register r, int content) {
 		Word w = (Word) Util.int2BitSet(content);
 		Util.bitsetDeepCopy(w, 16, r, r.getSize());
+		
 		// TODO: update GUI
 	}
 	public void setRegister(Register r, BitSet src) {
@@ -102,7 +109,13 @@ public class Simulator {
 		setRegister(r, srcData);
 		// TODO Auto-generated method stub
 		
+		
 	}
+//	public Register getRegister(int register, String reg_type ) {
+//		return gpr[0];
+//	}
+	
+	
 	public void operation(byte opcode, byte r, byte i, byte ix, int address) {
 		int ea;
 		switch (opcode) {
@@ -117,13 +130,13 @@ public class Simulator {
 			case 0:
 				setRegister(R0, MBR);
 				
-			case 01:
+			case 0b1:
 				setRegister(R1, MBR);
 			
-			case 10:
+			case 0b10:
 				setRegister(R2, MBR);
 				
-			case 11:
+			case 0b11:
 				setRegister(R3, MBR);
 				
 			}
@@ -136,17 +149,18 @@ public class Simulator {
 				case 0:
 					setRegister(MBR, R0);
 					
-				case 01:
+				case 0b1:
 					setRegister(MBR, R1);
 					
-				case 10:
+				case 0b10:
 					setRegister(MBR, R2);	
 				
-				case 11:
+				case 0b11:
 					setRegister(MBR, R3);	
 					
 				}
-		   //  memory.write(MBR); register MBR to word
+		     Util.bitsetDeepCopy(MBR,MBR.getSize(),memory.read(ea),16);
+//		     memory.write(MBR,ea); // register MBR to word
 		     
 		     
 		case OpCodes.LDA:
@@ -159,13 +173,13 @@ public class Simulator {
 			case 0:
 				setRegister(R0, MBR);
 				
-			case 01:
+			case 0b1:
 				setRegister(R1, MBR);
 			
-			case 10:
+			case 0b10:
 				setRegister(R2, MBR);
 				
-			case 11:
+			case 0b11:
 				setRegister(R3, MBR);
 			
 			
@@ -183,13 +197,13 @@ public class Simulator {
 			case 0:
 				setRegister(R0, MBR);
 			
-			case 01:
+			case 0b1:
 				setRegister(R1, MBR);
 			
-			case 10:
+			case 0b10:
 				setRegister(R2, MBR);
 				
-			case 11:
+			case 0b11:
 				setRegister(R3, MBR);
 			
 			}
@@ -202,19 +216,21 @@ public class Simulator {
 				case 0:
 					setRegister(MBR, R0);
 					
-				case 01:
+				case 0b1:
 					setRegister(MBR, R1);
 					
-				case 10:
+				case 0b10:
 					setRegister(MBR, R2);	
 				
-				case 11:
+				case 0b11:
 					setRegister(MBR, R3);
 				
 				}
+		     Util.bitsetDeepCopy(MBR,MBR.getSize(),memory.read(ea),16);
 		   //  memory.write(MBR); register MBR to word
 			
 		}
+
 		
 	}
 
