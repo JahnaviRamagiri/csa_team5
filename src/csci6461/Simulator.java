@@ -129,11 +129,11 @@ public class Simulator {
 		return null;
 		
 	}
-	
+
 	public void setRegister(Register r, int content) {
 		Word w = (Word) Util.int2BitSet(content);
-		Util.bitsetDeepCopy(w, 16, r, r.getSize());
-//		MainFrame.updateUI(regName2Str(r), r);
+		Util.bitSetDeepCopy(w, 16, r, r.getSize());
+		MainFrame.updateUI(regName2Str(r), r);
 		// TODO: update GUI
 	}
 	public void setRegister(Register r, BitSet src) {
@@ -191,7 +191,7 @@ public class Simulator {
 					setRegister(MBR, R3);	
 					
 				}
-		     Util.bitsetDeepCopy(MBR,MBR.getSize(),memory.read(ea),16);
+		     Util.bitSetDeepCopy(MBR,MBR.getSize(),memory.read(ea),16);
 //		     memory.write(MBR,ea); // register MBR to word
 		     
 		     
@@ -258,7 +258,7 @@ public class Simulator {
 					setRegister(MBR, R3);
 				
 				}
-		     Util.bitsetDeepCopy(MBR,MBR.getSize(),memory.read(ea),16);
+		     Util.bitSetDeepCopy(MBR,MBR.getSize(),memory.read(ea),16);
 		   //  memory.write(MBR); register MBR to word
 			
 		}

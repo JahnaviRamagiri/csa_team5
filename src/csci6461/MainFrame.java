@@ -18,7 +18,7 @@ import java.awt.event.ActionEvent;
 public class MainFrame extends JFrame {
 	
 //	 Initialise memory
-	static int[] MEM = new int[4096];
+	private static Memory memory = Memory.getInstance();
 //	TODO : change to memory class
 	static int mar;
 	static int mbr;
@@ -34,31 +34,32 @@ public class MainFrame extends JFrame {
 	
 	
 	private JPanel contentPane;
-	private JTextField textField_GPR0;
-	private JTextField textField_GPR1;
-	private JTextField textField_GPR2;
-	private JTextField textField_input;
-	private JTextField textField_GPR3;
-	private JTextField textField_IXR1;
-	private JTextField textField_IXR2;
-	private JTextField textField_IXR3;
-	private JTextField textField_PC;
-	private JTextField textField_MAR;
-	private JTextField textField_MBR;
-	private JTextField textField_IR;
+	private static JTextField textField_GPR0;
+	private static JTextField textField_GPR1;
+	private static JTextField textField_GPR2;
+	private static JTextField textField_input;
+	private static JTextField textField_GPR3;
+	private static JTextField textField_IXR1;
+	private static JTextField textField_IXR2;
+	private static JTextField textField_IXR3;
+	private static JTextField textField_PC;
+	private static JTextField textField_MAR;
+	private static JTextField textField_MBR;
+	private static JTextField textField_IR;
 	
+	private File f = new File("./src/csci6461/input.txt");  
+	
+	/**
+	 * 
+	 * @param input
+	 */
 	static void load_instruction(String input) {
-		
-//		String st1=input.getText();
-		
 		
 		pc = Integer.parseInt(input,2);
 		mar = pc;
 		mbr = MEM[mar];
 		System.out.println(MEM[mar]);
 		ir = mbr;
-		
-		
 				
 		
 	    System.out.println("I just got executed!");
@@ -90,7 +91,42 @@ public class MainFrame extends JFrame {
 		
 		
 	}
-	
+	private static JTextField getRegisterGUI(String regStr) {
+		if (regStr == "R0") {
+			return textField_GPR0;
+		}
+		if (regStr == "R1") {
+			return textField_GPR1;
+		}
+		if (regStr == "R2") {
+			return textField_GPR2;
+		}
+		if (regStr == "R3") {
+			return textField_GPR3;
+		}
+		if (regStr == "X1") {
+			return textField_IXR1;
+		}
+		if (regStr == "X2") {
+			return textField_IXR2;
+		}
+		if (regStr == "X3") {
+			return textField_IXR3;
+		}
+		if (regStr == "PC") {
+			return textField_PC;
+		}
+		if (regStr == "MAR") {
+			return textField_MAR;
+		}
+		if (regStr == "MBR") {
+			return textField_MBR;
+		}
+		if (regStr == "IR") {
+			return textField_IR;
+		}
+		return null;
+	}
 //	public static void updateUI(String register, BitSet value) {
 //		try {
 //			JTextField[] curr_reg = Registers.get(register);
@@ -109,9 +145,10 @@ public class MainFrame extends JFrame {
 //	}
 
 	
-//	public static void updateUI() {
-//		
-//	}
+	public static void updateUI(String regStr, BitSet value) {
+		JTextField reg = getRegisterGUI(regStr);
+		reg.setText(Integer.toBinaryString(Util.bitSet2Int(value)));
+	}
 		
 
 	
@@ -388,9 +425,7 @@ public class MainFrame extends JFrame {
 		JButton Init_Button = new JButton("INIT");
 		Init_Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText();
-//				pcx = Integer.parseInt(st1,2);
-				textField_PC.setText(st1);
+				textField_PC.setText("000000000000");
 				textField_GPR0.setText("0000000000000000");                      //Initializing the default values to zero into all fields
 				textField_GPR1.setText("0000000000000000");
 				textField_GPR2.setText("0000000000000000");
@@ -398,10 +433,10 @@ public class MainFrame extends JFrame {
 				textField_IXR1.setText("0000000000000000");
 				textField_IXR2.setText("0000000000000000");
 				textField_IXR3.setText("0000000000000000");
-				textField_MAR.setText("0000000000000000");
+				textField_MAR.setText("000000000000");
 				textField_MBR.setText("0000000000000000");
 				textField_IR.setText("0000000000000000");
-				File f = new File("./src/csci6461/input.txt");              //Providing the location of the input file 
+            //Providing the location of the input file 
 				try {
 					Scanner s = new Scanner(f);
 					while (s.hasNextLine()) {
@@ -409,9 +444,11 @@ public class MainFrame extends JFrame {
 						String[] sa = s1.split(" ");
 						System.out.println(sa[0] + " " + sa[1]);
 						// setting the memory
-						MEM[Integer.parseInt(sa[0].trim(), 16)] = Integer.parseInt(sa[1].trim(), 16);
-						System.out.println(Integer.parseInt(sa[0],16));
-						System.out.println(MEM[Integer.parseInt(sa[0],16)]);
+						int addr = Integer.parseInt(sa[0].trim(), 16);
+						Word content = Word.int2Word(Integer.parseInt(sa[0].trim(), 16));
+						memory.write(content, addr);
+//						System.out.println(Integer.parseInt(sa[0],16));
+//						System.out.println(MEM[Integer.parseInt(sa[0],16)]);
 					}
 					s.close();
 				} catch (Exception ex) {

@@ -12,4 +12,11 @@ public class Word extends BitSet {
 	public Word() {
 		super(16);
 	}
+	
+	public static Word int2Word(int value) {
+		Word w = new Word();
+		BitSet bitset = Util.int2BitSet(value);
+		Util.bitSetDeepCopy(bitset, bitset.length(), w, 16);
+		return w;
+	}
 }

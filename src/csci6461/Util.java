@@ -28,7 +28,7 @@ public class Util {
 	}
 	
 	
-	public static void bitsetDeepCopy(BitSet source, int sourceBits,
+	public static void bitSetDeepCopy(BitSet source, int sourceBits,
 			BitSet destination, int destinationBits) {
 		if (sourceBits <= destinationBits) {
 			destination.clear();
