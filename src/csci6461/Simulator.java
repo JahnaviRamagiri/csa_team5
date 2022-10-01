@@ -42,11 +42,11 @@ public class Simulator {
 		
 		PC = new Register(12);
 		IR = new Register(16);
-		CC = new Register(4);
+//		CC = new Register(4);
 		
 		MAR = new Register(12);
 		MBR = new Register(16);
-		MFR = new Register(4);
+//		MFR = new Register(4);
 		
 		OPCODE = new Register(6);
 		IX = new Register(2);

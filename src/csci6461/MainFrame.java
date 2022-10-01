@@ -161,18 +161,21 @@ public class MainFrame extends JFrame {
 		textField_GPR0 = new JTextField();
 		textField_GPR0.setEditable(false);
 		textField_GPR0.setBounds(136, 137, 245, 19);
+		textField_GPR0.setText("0000000000000000");
 		contentPane.add(textField_GPR0);
 		textField_GPR0.setColumns(10);
 		
 		textField_GPR1 = new JTextField();
 		textField_GPR1.setEditable(false);
 		textField_GPR1.setBounds(136, 181, 245, 19);
+		textField_GPR1.setText("0000000000000000");
 		contentPane.add(textField_GPR1);
 		textField_GPR1.setColumns(10);
 		
 		textField_GPR2 = new JTextField();
 		textField_GPR2.setEditable(false);
 		textField_GPR2.setBounds(136, 217, 245, 19);
+		textField_GPR2.setText("0000000000000000");
 		contentPane.add(textField_GPR2);
 		textField_GPR2.setColumns(10);
 		
@@ -225,6 +228,7 @@ public class MainFrame extends JFrame {
 		textField_GPR3.setEditable(false);
 		textField_GPR3.setColumns(10);
 		textField_GPR3.setBounds(136, 254, 245, 19);
+		textField_GPR3.setText("0000000000000000");
 		contentPane.add(textField_GPR3);
 		
 		JButton GPR3_load = new JButton("Load");
@@ -239,6 +243,7 @@ public class MainFrame extends JFrame {
 		textField_IXR1.setEditable(false);
 		textField_IXR1.setColumns(10);
 		textField_IXR1.setBounds(136, 295, 245, 19);
+		textField_IXR1.setText("0000000000000000");
 		contentPane.add(textField_IXR1);
 		
 		JButton IXR1_load = new JButton("Load");
@@ -253,6 +258,8 @@ public class MainFrame extends JFrame {
 		textField_IXR2.setEditable(false);
 		textField_IXR2.setColumns(10);
 		textField_IXR2.setBounds(136, 332, 245, 19);
+		textField_IXR2.setText("0000000000000000");
+
 		contentPane.add(textField_IXR2);
 		
 		JButton IXR2_load = new JButton("Load");
@@ -263,6 +270,8 @@ public class MainFrame extends JFrame {
 		textField_IXR3.setEditable(false);
 		textField_IXR3.setColumns(10);
 		textField_IXR3.setBounds(136, 374, 245, 19);
+		textField_IXR3.setText("0000000000000000");
+
 		contentPane.add(textField_IXR3);
 		
 		JLabel lblNewLabel_2_1_1_1_1 = new JLabel("IXR 3");
@@ -281,6 +290,8 @@ public class MainFrame extends JFrame {
 		textField_PC.setEditable(false);
 		textField_PC.setColumns(10);
 		textField_PC.setBounds(781, 137, 313, 19);
+		textField_PC.setText("000000000000");
+		
 		contentPane.add(textField_PC);
 		
 		JButton PC_load = new JButton("Load");
@@ -295,6 +306,8 @@ public class MainFrame extends JFrame {
 		textField_MAR.setEditable(false);
 		textField_MAR.setColumns(10);
 		textField_MAR.setBounds(781, 187, 313, 19);
+		textField_MAR.setText("000000000000");
+
 		contentPane.add(textField_MAR);
 		
 		JButton MAR_load = new JButton("Load");
@@ -309,6 +322,7 @@ public class MainFrame extends JFrame {
 		textField_MBR.setEditable(false);
 		textField_MBR.setColumns(10);
 		textField_MBR.setBounds(781, 223, 313, 19);
+		textField_MBR.setText("0000000000000000");
 		contentPane.add(textField_MBR);
 		
 		JButton MBR_load = new JButton("Load");
@@ -323,6 +337,7 @@ public class MainFrame extends JFrame {
 		textField_IR.setEditable(false);
 		textField_IR.setColumns(10);
 		textField_IR.setBounds(781, 265, 313, 19);
+		textField_IR.setText("0000000000000000");
 		contentPane.add(textField_IR);
 		
 		JButton btnNewButton_3 = new JButton("Load");
@@ -386,22 +401,21 @@ public class MainFrame extends JFrame {
 				textField_MAR.setText("0000000000000000");
 				textField_MBR.setText("0000000000000000");
 				textField_IR.setText("0000000000000000");
-				File f= new File("C:\\Users\\Jahnavi Ramagiri\\git\\csa_team5\\src\\csci6461\\input.txt");              //Providing the location of the input file 
+				File f = new File("./src/csci6461/input.txt");              //Providing the location of the input file 
 				try {
-				Scanner s=new Scanner(f);
-				while(s.hasNextLine())
-				{
-					String s1=s.nextLine();
-					String[] sa=s1.split(" ");
-					System.out.println(sa);
-					MEM[Integer.parseInt(sa[0],16)]=Integer.parseInt(sa[1],16);	
-//					System.out.println(sa[0]);
-//					System.out.println(MEM[Integer.parseInt(sa[0],16)]);
-				}
-				}
-				catch(Exception ex)
-				{
-					System.out.println("Exception occured in input file"+ex);
+					Scanner s = new Scanner(f);
+					while (s.hasNextLine()) {
+						String s1 = s.nextLine();
+						String[] sa = s1.split(" ");
+						System.out.println(sa[0] + " " + sa[1]);
+						// setting the memory
+						MEM[Integer.parseInt(sa[0].trim(), 16)] = Integer.parseInt(sa[1].trim(), 16);
+						System.out.println(Integer.parseInt(sa[0],16));
+						System.out.println(MEM[Integer.parseInt(sa[0],16)]);
+					}
+					s.close();
+				} catch (Exception ex) {
+					System.out.println("Exception occured in input file" + ex);
 				}
 			}
 		});
