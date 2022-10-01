@@ -18,7 +18,7 @@ import java.awt.event.ActionEvent;
 public class MainFrame extends JFrame {
 	
 //	 Initialise memory
-	private static Memory memory = Memory.getInstance();
+	private static Simulator simulator = Simulator.getInstance();
 //	TODO : change to memory class
 	static int mar;
 	static int mbr;
@@ -49,48 +49,6 @@ public class MainFrame extends JFrame {
 	
 	private File f = new File("./src/csci6461/input.txt");  
 	
-	/**
-	 * 
-	 * @param input
-	 */
-	static void load_instruction(String input) {
-		
-		pc = Integer.parseInt(input,2);
-		mar = pc;
-		mbr = MEM[mar];
-		System.out.println(MEM[mar]);
-		ir = mbr;
-				
-		
-	    System.out.println("I just got executed!");
-	  }
-	
-	static void ir_decode(int ir) {
-		ir_binary = Integer.toBinaryString(ir);
-//		ir[16] == 
-//			ir[0:5] = opcode
-//			ir[6:7] = Register
-//			ir[8:9] = Index
-//			ir[10] = Instruction
-//			ir[11:15] = Address
-		
-		int zeros = 16 - ir_binary.length();
-		for (int i = 0; i < zeros; i++) {
-			ir_binary = "0" + ir_binary ;
-		}
-		
-		// Convert to bytes
-		OPCODE = (byte)Integer.parseInt(ir_binary.substring(0,6), 2);
-		R = (byte)Integer.parseInt(ir_binary.substring(6,8),2);
-		IX = (byte)Integer.parseInt(ir_binary.substring(8,10),2);
-		I = (byte)Integer.parseInt(ir_binary.substring(10),2);
-		ADDR = Integer.parseInt(ir_binary.substring(11,16),2);
-		
-		
-		
-		
-		
-	}
 	private static JTextField getRegisterGUI(String regStr) {
 		if (regStr == "R0") {
 			return textField_GPR0;
@@ -127,27 +85,19 @@ public class MainFrame extends JFrame {
 		}
 		return null;
 	}
-//	public static void updateUI(String register, BitSet value) {
-//		try {
-//			JTextField[] curr_reg = Registers.get(register);
-//			curr_reg.setText(Integer.toBinaryString(pc))
-//			
-////			for (int i = 0; i < curr_reg.length; i++) {
-////				if (value.get(i)) {
-////					curr_reg[i].setSelected(true);
-////				} else {
-////					curr_reg[i].setSelected(false);
-////				}
-////			}
-//		} catch (Exception e) {
-//
-//		}
-//	}
-
 	
-	public static void updateUI(String regStr, BitSet value) {
+	public static void updateUI(String regStr, BitSet value, int length) {
 		JTextField reg = getRegisterGUI(regStr);
-		reg.setText(Integer.toBinaryString(Util.bitSet2Int(value)));
+		// no update if no corresponding GUI element
+		if (reg == null) {
+			return;
+		}
+		String result = Integer.toBinaryString(Util.bitSet2Int(value));
+		int zeros = length - result.length();
+		for (int i = 0; i < zeros; i++) {
+			result = "0" + result;
+		}
+		reg.setText(result);
 	}
 		
 
@@ -156,7 +106,7 @@ public class MainFrame extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		System.out.println(pc);
+//		System.out.println(pc);
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -381,7 +331,7 @@ public class MainFrame extends JFrame {
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				load_instruction(st1);
+
 				textField_PC.setText(Integer.toBinaryString(pc));
 				textField_MAR.setText(Integer.toBinaryString(mar));
 				textField_MBR.setText(Integer.toBinaryString(mbr));
@@ -399,16 +349,7 @@ public class MainFrame extends JFrame {
 		JButton SS_button = new JButton("SS");
 		SS_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				// input ir
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				load_instruction(st1);
-				// ir decode
-				ir_decode(ir);
-				// operation
-				Simulator.getInstance().operation(OPCODE, R, I, IX, ADDR);
-//				getRegister()
-				
+				simulator.singleStep();
 			}
 		});
 		SS_button.setBounds(831, 455, 85, 21);
@@ -425,35 +366,7 @@ public class MainFrame extends JFrame {
 		JButton Init_Button = new JButton("INIT");
 		Init_Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textField_PC.setText("000000000000");
-				textField_GPR0.setText("0000000000000000");                      //Initializing the default values to zero into all fields
-				textField_GPR1.setText("0000000000000000");
-				textField_GPR2.setText("0000000000000000");
-				textField_GPR3.setText("0000000000000000");
-				textField_IXR1.setText("0000000000000000");
-				textField_IXR2.setText("0000000000000000");
-				textField_IXR3.setText("0000000000000000");
-				textField_MAR.setText("000000000000");
-				textField_MBR.setText("0000000000000000");
-				textField_IR.setText("0000000000000000");
-            //Providing the location of the input file 
-				try {
-					Scanner s = new Scanner(f);
-					while (s.hasNextLine()) {
-						String s1 = s.nextLine();
-						String[] sa = s1.split(" ");
-						System.out.println(sa[0] + " " + sa[1]);
-						// setting the memory
-						int addr = Integer.parseInt(sa[0].trim(), 16);
-						Word content = Word.int2Word(Integer.parseInt(sa[0].trim(), 16));
-						memory.write(content, addr);
-//						System.out.println(Integer.parseInt(sa[0],16));
-//						System.out.println(MEM[Integer.parseInt(sa[0],16)]);
-					}
-					s.close();
-				} catch (Exception ex) {
-					System.out.println("Exception occured in input file" + ex);
-				}
+				simulator.init();
 			}
 		});
 		Init_Button.setBounds(1032, 455, 85, 21);

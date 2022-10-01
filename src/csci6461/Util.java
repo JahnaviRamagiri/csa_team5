@@ -28,17 +28,30 @@ public class Util {
 	}
 	
 	
+	public static Word int2Word(int value) {
+		Word w = new Word();
+	    int index = 0;
+	    while (value != 0) {
+	      if (value % 2 != 0) {
+	        w.set(index);
+	      }
+	      ++index;
+	      value = value >>> 1;
+	    }
+	    return w;
+	}
 	public static void bitSetDeepCopy(BitSet source, int sourceBits,
 			BitSet destination, int destinationBits) {
 		if (sourceBits <= destinationBits) {
 			destination.clear();
-			for (int i = destinationBits - sourceBits, j = 0; i < destinationBits; i++, j++)
-				destination.set(i, source.get(j));
-
+			for (int i = 0; i < sourceBits; i++) {
+				destination.set(i, source.get(i));
+			}
 		} else {
-			// Truncate
-			for (int i = sourceBits - destinationBits, j = 0; i < sourceBits; i++, j++)
-				destination.set(j, source.get(i));
+			destination.clear();
+			for (int i = 0; i < destinationBits; i++) {
+				destination.set(i, source.get(i));
+			}
 		}
 	}
 }

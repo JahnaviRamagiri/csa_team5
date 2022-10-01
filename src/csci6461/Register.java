@@ -15,7 +15,7 @@ public class Register extends BitSet {
 		super(size);
 		this.size = size;
 	}
-
+	
 	public int getSize() {
 		return size;
 	}

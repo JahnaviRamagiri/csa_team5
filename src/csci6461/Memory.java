@@ -17,10 +17,11 @@ import java.util.BitSet;
 public class Memory {
 	
 	private static final Memory INSTANCE = new Memory();
-	private static Word[] memory = new Word[2048];
+	private static Word[] memory;
 	
 	//	private constructor to prevent initialization from outside the class
 	private Memory() {
+		memory = new Word[4096];
 		Arrays.fill(memory, new Word());
 	}
 	public static Memory getInstance() {

@@ -1,6 +1,9 @@
 package csci6461;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Scanner;
 
 public class Simulator {
 	
@@ -27,7 +30,10 @@ public class Simulator {
 	private Register R;
 	private Register I;
 	private Register ADDR;
-
+	
+	private File f; 
+	private ArrayList<Integer> instructionAddr = new ArrayList<>();
+	private int pcx;
 	
 	private Simulator() {
 		// initialize registers
@@ -54,6 +60,7 @@ public class Simulator {
 		I = new Register(1);
 		ADDR = new Register(5);
 		
+		pcx = 0;
 		
 	}
 	
@@ -62,6 +69,88 @@ public class Simulator {
 	}
 	
 	private static Memory memory = Memory.getInstance();
+	
+	
+	public void init() {
+		instructionAddr.clear();
+		pcx = 0;
+		loadFile("./src/csci6461/input.txt");
+		try {
+			Scanner s = new Scanner(f);
+			while (s.hasNextLine()) {
+				String s1 = s.nextLine();
+				String[] sa = s1.split(" ");
+				// setting the memory
+				int addr = Integer.parseInt(sa[0].trim(), 16);
+				instructionAddr.add(addr); // store addresses of instructions
+				Word content = Util.int2Word(Integer.parseInt(sa[1].trim(), 16));
+				memory.write(content, addr);
+//				System.out.println(addr);
+//				System.out.println(Integer.toHexString(Util.bitSet2Int(memory.read(addr))));
+			}
+			s.close();
+		} catch (Exception ex) {
+			System.out.println("Exception occured in input file" + ex);
+		}
+	
+	}
+	
+	public void singleStep() {
+		if (pcx >= instructionAddr.size()) {
+			System.out.println("All instructions executed");
+		}
+		// fetch instruction
+		loadInstruction(instructionAddr.get(pcx));
+		// ir decode
+
+		int ir = Util.bitSet2Int(IR);
+		irDecode(ir);
+		// operation
+		getInstance().operation();
+		pcx++;
+	}
+	public void loadFile(String path) {
+		f = new File(path);
+	}
+	
+	/**
+	 * load instruction at given address
+	 * @param input
+	 */
+	public void loadInstruction(int address) {
+		System.out.println("===");
+		System.out.println(address);
+		setRegister(PC, address);
+		System.out.println(Util.bitSet2Int(PC));
+		setRegister(MAR, PC);
+		System.out.println(Util.bitSet2Int(MAR));
+		setRegister(MBR, memory.read(Util.bitSet2Int(MAR)));
+		System.out.println(Util.bitSet2Int(MBR));
+		setRegister(IR, MBR);
+		System.out.println(Util.bitSet2Int(IR));
+	}
+	
+	public void irDecode(int ir) {
+		String ir_binary = Integer.toBinaryString(ir);
+//		ir[16] == 
+//			ir[0:5] = opcode
+//			ir[6:7] = Register
+//			ir[8:9] = Index
+//			ir[10] = Instruction
+//			ir[11:15] = Address
+		
+		int zeros = 16 - ir_binary.length();
+		for (int i = 0; i < zeros; i++) {
+			ir_binary = "0" + ir_binary ;
+		}
+		
+		setRegister(OPCODE,Integer.parseInt(ir_binary.substring(0,6), 2));
+		setRegister(R,Integer.parseInt(ir_binary.substring(6,8),2));
+		setRegister(IX,Integer.parseInt(ir_binary.substring(8,10),2));
+		setRegister(I,Integer.parseInt(ir_binary.substring(10),2));
+		setRegister(ADDR,Integer.parseInt(ir_binary.substring(11,16),2));
+		
+	}
 	
 	public static int calculateEA(byte i, byte ix, int address) {
 		int ea = 0;	// return value
@@ -131,15 +220,15 @@ public class Simulator {
 	}
 
 	public void setRegister(Register r, int content) {
-		Word w = (Word) Util.int2BitSet(content);
+		BitSet w = Util.int2BitSet(content);
 		Util.bitSetDeepCopy(w, 16, r, r.getSize());
-		MainFrame.updateUI(regName2Str(r), r);
-		// TODO: update GUI
+		MainFrame.updateUI(regName2Str(r), r, r.getSize());
+
 	}
 	public void setRegister(Register r, BitSet src) {
 		int srcData = Util.bitSet2Int(src);
 		setRegister(r, srcData);
-		// TODO Auto-generated method stub
+		MainFrame.updateUI(regName2Str(r), r, r.getSize());
 		
 		
 	}
@@ -148,8 +237,13 @@ public class Simulator {
 //	}
 	
 	
-	public void operation(byte opcode, byte r, byte i, byte ix, int address) {
+	public void operation() {
 		int ea;
+		byte opcode = (byte) Util.bitSet2Int(OPCODE);
+		byte r = (byte) Util.bitSet2Int(R);
+		byte i = (byte) Util.bitSet2Int(I);
+		byte ix = (byte) Util.bitSet2Int(IX);
+		int address = Util.bitSet2Int(ADDR);
 		switch (opcode) {
 		case OpCodes.LDR:
 			ea = calculateEA(i, ix, address);
