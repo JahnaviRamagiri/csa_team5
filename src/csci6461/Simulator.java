@@ -134,7 +134,7 @@ public class Simulator {
 		Word w = (Word) Util.int2BitSet(content);
 		Util.bitsetDeepCopy(w, 16, r, r.getSize());
 		MainFrame.updateUI(regName2Str(r), r);
-		// TODO: update GUI
+		
 	}
 	public void setRegister(Register r, BitSet src) {
 		int srcData = Util.bitSet2Int(src);
