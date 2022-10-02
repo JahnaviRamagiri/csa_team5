@@ -51,6 +51,9 @@ public class MainFrame extends JFrame {
 	private JTextField textField_MFR;
 	private JTextField textField_Priviledged;
 	
+	/*
+	 * Method to get the text field object for respective registers
+	 */
 	private static JTextField getRegisterGUI(String regStr) {
 		if (regStr == "R0") {
 			return textField_GPR0;
@@ -88,6 +91,10 @@ public class MainFrame extends JFrame {
 		return null;
 	}
 	
+	
+	/*
+	 * 
+	 */
 	public static void updateUI(String regStr, BitSet value, int length) {
 		JTextField reg = getRegisterGUI(regStr);
 		// no update if no corresponding GUI element
@@ -189,12 +196,22 @@ public class MainFrame extends JFrame {
 		contentPane.add(GPR0_load);
 		
 		JButton GPR1_load = new JButton("LD");
+		GPR1_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_GPR1.setText(st1);
+			}
+		});
 		GPR1_load.setBounds(391, 181, 85, 21);
 		contentPane.add(GPR1_load);
 		
 		JButton GPR2_load = new JButton("LD");
 		GPR2_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_GPR2.setText(st1);
 			}
 		});
 		GPR2_load.setBounds(391, 217, 85, 21);
@@ -221,6 +238,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(textField_GPR3);
 		
 		JButton GPR3_load = new JButton("LD");
+		GPR3_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_GPR3.setText(st1);
+			}
+		});
 		GPR3_load.setBounds(391, 254, 85, 21);
 		contentPane.add(GPR3_load);
 		
@@ -236,6 +260,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(textField_IXR1);
 		
 		JButton IXR1_load = new JButton("LD");
+		IXR1_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_IXR1.setText(st1);
+			}
+		});
 		IXR1_load.setBounds(391, 295, 85, 21);
 		contentPane.add(IXR1_load);
 		
@@ -252,6 +283,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(textField_IXR2);
 		
 		JButton IXR2_load = new JButton("LD");
+		IXR2_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_IXR2.setText(st1);
+			}
+		});
 		IXR2_load.setBounds(391, 332, 85, 21);
 		contentPane.add(IXR2_load);
 		
@@ -268,6 +306,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(lblNewLabel_2_1_1_1_1);
 		
 		JButton IXR3_load = new JButton("LD");
+		IXR3_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_IXR3.setText(st1);
+			}
+		});
 		IXR3_load.setBounds(391, 374, 85, 21);
 		contentPane.add(IXR3_load);
 		
@@ -284,6 +329,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(textField_PC);
 		
 		JButton PC_load = new JButton("LD");
+		PC_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_PC.setText(st1);
+			}
+		});
 		PC_load.setBounds(1104, 137, 85, 21);
 		contentPane.add(PC_load);
 		
@@ -300,6 +352,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(textField_MAR);
 		
 		JButton MAR_load = new JButton("LD");
+		MAR_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_MAR.setText(st1);
+			}
+		});
 		MAR_load.setBounds(1104, 187, 85, 21);
 		contentPane.add(MAR_load);
 		
@@ -315,6 +374,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(textField_MBR);
 		
 		JButton MBR_load = new JButton("LD");
+		MBR_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
+				
+				textField_MBR.setText(st1);
+			}
+		});
 		MBR_load.setBounds(1104, 223, 85, 21);
 		contentPane.add(MBR_load);
 		
