@@ -48,6 +48,8 @@ public class MainFrame extends JFrame {
 	private static JTextField textField_IR;
 	
 	private File f = new File("./src/csci6461/input.txt");  
+	private JTextField textField_MFR;
+	private JTextField textField_Priviledged;
 	
 	private static JTextField getRegisterGUI(String regStr) {
 		if (regStr == "R0") {
@@ -166,7 +168,7 @@ public class MainFrame extends JFrame {
 		contentPane.add(textField_GPR2);
 		textField_GPR2.setColumns(10);
 		
-		JButton GPR0_load = new JButton("Load");
+		JButton GPR0_load = new JButton("LD");
 		GPR0_load.addActionListener(new ActionListener() {
 			/*
 			 * take input from 'input'
@@ -186,11 +188,11 @@ public class MainFrame extends JFrame {
 		GPR0_load.setBounds(391, 137, 85, 21);
 		contentPane.add(GPR0_load);
 		
-		JButton GPR1_load = new JButton("Load");
+		JButton GPR1_load = new JButton("LD");
 		GPR1_load.setBounds(391, 181, 85, 21);
 		contentPane.add(GPR1_load);
 		
-		JButton GPR2_load = new JButton("Load");
+		JButton GPR2_load = new JButton("LD");
 		GPR2_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -218,7 +220,7 @@ public class MainFrame extends JFrame {
 		textField_GPR3.setText("0000000000000000");
 		contentPane.add(textField_GPR3);
 		
-		JButton GPR3_load = new JButton("Load");
+		JButton GPR3_load = new JButton("LD");
 		GPR3_load.setBounds(391, 254, 85, 21);
 		contentPane.add(GPR3_load);
 		
@@ -233,7 +235,7 @@ public class MainFrame extends JFrame {
 		textField_IXR1.setText("0000000000000000");
 		contentPane.add(textField_IXR1);
 		
-		JButton IXR1_load = new JButton("Load");
+		JButton IXR1_load = new JButton("LD");
 		IXR1_load.setBounds(391, 295, 85, 21);
 		contentPane.add(IXR1_load);
 		
@@ -249,7 +251,7 @@ public class MainFrame extends JFrame {
 
 		contentPane.add(textField_IXR2);
 		
-		JButton IXR2_load = new JButton("Load");
+		JButton IXR2_load = new JButton("LD");
 		IXR2_load.setBounds(391, 332, 85, 21);
 		contentPane.add(IXR2_load);
 		
@@ -265,7 +267,7 @@ public class MainFrame extends JFrame {
 		lblNewLabel_2_1_1_1_1.setBounds(25, 377, 45, 13);
 		contentPane.add(lblNewLabel_2_1_1_1_1);
 		
-		JButton IXR3_load = new JButton("Load");
+		JButton IXR3_load = new JButton("LD");
 		IXR3_load.setBounds(391, 374, 85, 21);
 		contentPane.add(IXR3_load);
 		
@@ -281,7 +283,7 @@ public class MainFrame extends JFrame {
 		
 		contentPane.add(textField_PC);
 		
-		JButton PC_load = new JButton("Load");
+		JButton PC_load = new JButton("LD");
 		PC_load.setBounds(1104, 137, 85, 21);
 		contentPane.add(PC_load);
 		
@@ -297,7 +299,7 @@ public class MainFrame extends JFrame {
 
 		contentPane.add(textField_MAR);
 		
-		JButton MAR_load = new JButton("Load");
+		JButton MAR_load = new JButton("LD");
 		MAR_load.setBounds(1104, 187, 85, 21);
 		contentPane.add(MAR_load);
 		
@@ -312,7 +314,7 @@ public class MainFrame extends JFrame {
 		textField_MBR.setText("0000000000000000");
 		contentPane.add(textField_MBR);
 		
-		JButton MBR_load = new JButton("Load");
+		JButton MBR_load = new JButton("LD");
 		MBR_load.setBounds(1104, 223, 85, 21);
 		contentPane.add(MBR_load);
 		
@@ -339,11 +341,11 @@ public class MainFrame extends JFrame {
 //				textField_PC
 			}
 		});
-		btnNewButton_3.setBounds(768, 408, 186, 21);
+		btnNewButton_3.setBounds(781, 404, 74, 37);
 		contentPane.add(btnNewButton_3);
 		
 		JButton btnNewButton_4 = new JButton("Store");
-		btnNewButton_4.setBounds(964, 408, 199, 21);
+		btnNewButton_4.setBounds(781, 447, 74, 37);
 		contentPane.add(btnNewButton_4);
 		
 		JButton SS_button = new JButton("SS");
@@ -352,7 +354,7 @@ public class MainFrame extends JFrame {
 				simulator.singleStep();
 			}
 		});
-		SS_button.setBounds(831, 455, 85, 21);
+		SS_button.setBounds(962, 416, 94, 59);
 		contentPane.add(SS_button);
 		
 		JButton Run_button = new JButton("Run");
@@ -360,7 +362,7 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		Run_button.setBounds(926, 455, 85, 21);
+		Run_button.setBounds(1066, 416, 94, 59);
 		contentPane.add(Run_button);
 		
 		JButton Init_Button = new JButton("INIT");
@@ -369,7 +371,29 @@ public class MainFrame extends JFrame {
 				simulator.init();
 			}
 		});
-		Init_Button.setBounds(1032, 455, 85, 21);
+		Init_Button.setBounds(862, 427, 74, 37);
 		contentPane.add(Init_Button);
+		
+		JLabel lblNewLabel_4_1_1_2 = new JLabel("MFR");
+		lblNewLabel_4_1_1_2.setBounds(670, 298, 63, 24);
+		contentPane.add(lblNewLabel_4_1_1_2);
+		
+		textField_MFR = new JTextField();
+		textField_MFR.setText("0000");
+		textField_MFR.setEditable(false);
+		textField_MFR.setColumns(10);
+		textField_MFR.setBounds(781, 301, 313, 19);
+		contentPane.add(textField_MFR);
+		
+		JLabel lblNewLabel_4_1_1_3 = new JLabel("Priviledged");
+		lblNewLabel_4_1_1_3.setBounds(670, 340, 85, 24);
+		contentPane.add(lblNewLabel_4_1_1_3);
+		
+		textField_Priviledged = new JTextField();
+		textField_Priviledged.setText("0");
+		textField_Priviledged.setEditable(false);
+		textField_Priviledged.setColumns(10);
+		textField_Priviledged.setBounds(781, 343, 313, 19);
+		contentPane.add(textField_Priviledged);
 	}
 }
