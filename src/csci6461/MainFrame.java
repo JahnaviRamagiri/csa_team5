@@ -19,7 +19,7 @@ public class MainFrame extends JFrame {
 	
 //	 Initialise memory
 	private static Simulator simulator = Simulator.getInstance();
-//	TODO : change to memory class
+
 	static int mar;
 	static int mbr;
 	static int pc = 10;
@@ -177,18 +177,9 @@ public class MainFrame extends JFrame {
 		
 		JButton GPR0_load = new JButton("LD");
 		GPR0_load.addActionListener(new ActionListener() {
-			/*
-			 * take input from 'input'
-			 * load to register GPR0
-			 * 
-			 * 
-			 * 
-			*/
-//			load_input
+
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_GPR0.setText(st1);
+				simulator.loadRegisterFromInput("R0", textField_input.getText());
 
 			}
 		});
@@ -198,9 +189,7 @@ public class MainFrame extends JFrame {
 		JButton GPR1_load = new JButton("LD");
 		GPR1_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_GPR1.setText(st1);
+				simulator.loadRegisterFromInput("R1", textField_input.getText());
 			}
 		});
 		GPR1_load.setBounds(391, 181, 85, 21);
@@ -209,9 +198,7 @@ public class MainFrame extends JFrame {
 		JButton GPR2_load = new JButton("LD");
 		GPR2_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_GPR2.setText(st1);
+				simulator.loadRegisterFromInput("R2", textField_input.getText());
 			}
 		});
 		GPR2_load.setBounds(391, 217, 85, 21);
@@ -240,9 +227,7 @@ public class MainFrame extends JFrame {
 		JButton GPR3_load = new JButton("LD");
 		GPR3_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_GPR3.setText(st1);
+				simulator.loadRegisterFromInput("R3", textField_input.getText());
 			}
 		});
 		GPR3_load.setBounds(391, 254, 85, 21);
@@ -262,9 +247,7 @@ public class MainFrame extends JFrame {
 		JButton IXR1_load = new JButton("LD");
 		IXR1_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_IXR1.setText(st1);
+				simulator.loadRegisterFromInput("X1", textField_input.getText());
 			}
 		});
 		IXR1_load.setBounds(391, 295, 85, 21);
@@ -285,9 +268,7 @@ public class MainFrame extends JFrame {
 		JButton IXR2_load = new JButton("LD");
 		IXR2_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_IXR2.setText(st1);
+				simulator.loadRegisterFromInput("X2", textField_input.getText());
 			}
 		});
 		IXR2_load.setBounds(391, 332, 85, 21);
@@ -308,9 +289,7 @@ public class MainFrame extends JFrame {
 		JButton IXR3_load = new JButton("LD");
 		IXR3_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_IXR3.setText(st1);
+				simulator.loadRegisterFromInput("X3", textField_input.getText());
 			}
 		});
 		IXR3_load.setBounds(391, 374, 85, 21);
@@ -331,9 +310,7 @@ public class MainFrame extends JFrame {
 		JButton PC_load = new JButton("LD");
 		PC_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_PC.setText(st1);
+				simulator.loadRegisterFromInput("PC", textField_input.getText());
 			}
 		});
 		PC_load.setBounds(1104, 137, 85, 21);
@@ -354,9 +331,7 @@ public class MainFrame extends JFrame {
 		JButton MAR_load = new JButton("LD");
 		MAR_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_MAR.setText(st1);
+				simulator.loadRegisterFromInput("MAR", textField_input.getText());
 			}
 		});
 		MAR_load.setBounds(1104, 187, 85, 21);
@@ -376,9 +351,7 @@ public class MainFrame extends JFrame {
 		JButton MBR_load = new JButton("LD");
 		MBR_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-				
-				textField_MBR.setText(st1);
+				simulator.loadRegisterFromInput("MBR", textField_input.getText());
 			}
 		});
 		MBR_load.setBounds(1104, 223, 85, 21);
@@ -398,26 +371,28 @@ public class MainFrame extends JFrame {
 		JButton btnNewButton_3 = new JButton("Load");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String st1 = textField_input.getText(); // opcode||R||IX|I|Address
-
-				textField_PC.setText(Integer.toBinaryString(pc));
-				textField_MAR.setText(Integer.toBinaryString(mar));
-				textField_MBR.setText(Integer.toBinaryString(mbr));
-				System.out.println(pc);
-//				textField_PC
+				simulator.load();
 			}
 		});
 		btnNewButton_3.setBounds(781, 404, 74, 37);
 		contentPane.add(btnNewButton_3);
 		
 		JButton btnNewButton_4 = new JButton("Store");
+		btnNewButton_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				simulator.store();
+			}
+		});
 		btnNewButton_4.setBounds(781, 447, 74, 37);
+		
 		contentPane.add(btnNewButton_4);
 		
 		JButton SS_button = new JButton("SS");
 		SS_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				simulator.singleStep();
+				if (simulator.singleStep() == 1) {
+					SS_button.setEnabled(false);;
+				}
 			}
 		});
 		SS_button.setBounds(962, 416, 94, 59);
@@ -426,6 +401,8 @@ public class MainFrame extends JFrame {
 		JButton Run_button = new JButton("Run");
 		Run_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				while (simulator.singleStep() == 0) {
+				}
 			}
 		});
 		Run_button.setBounds(1066, 416, 94, 59);
@@ -461,5 +438,8 @@ public class MainFrame extends JFrame {
 		textField_Priviledged.setColumns(10);
 		textField_Priviledged.setBounds(781, 343, 313, 19);
 		contentPane.add(textField_Priviledged);
+		
+		simulator.init();
 	}
+	
 }
