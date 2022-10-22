@@ -415,8 +415,35 @@ public class Simulator {
 			Util.bitSetDeepCopy(MBR, MBR.getSize(), memory.read(ea), 16);
 			// memory.write(MBR); register MBR to word
 			break;
-		}
+		
 
+		case OpCodes.JZ:
+			ea = calculateEA(i, ix, address);
+			
+			// cr is c(r) register content
+			int cr = -1;
+			switch (r) {
+			case 0:
+				cr = Util.bitSet2Int(R0);
+				break;
+			case 0b1:
+				cr = Util.bitSet2Int(R1);
+				break;
+			case 0b10:
+				cr = Util.bitSet2Int(R2);
+				break;
+			case 0b11:
+				cr = Util.bitSet2Int(R3);
+				break;
+			}
+			
+			if (cr == 0) {
+				setRegister(PC, ea); // PC <- EA
+			} else {
+				setRegister(PC, Util.bitSet2Int(PC) + 1); // PC <- PC + 1
+			}
+			break;
+		}
 	}
 
 }
