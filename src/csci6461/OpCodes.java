@@ -10,4 +10,5 @@ public class OpCodes {
 	
 	public static final byte JZ = 10;
 	public static final byte JNE = 11;
+	public static final byte AMR = 04;
 }
