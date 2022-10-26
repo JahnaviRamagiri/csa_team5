@@ -266,7 +266,7 @@ public class Simulator {
 		return null;
 
 	}
-	
+
 	public void setRegister(Register r, int content) {
 		BitSet w = Util.int2BitSet(content);
 		Util.bitSetDeepCopy(w, 16, r, r.getSize());
@@ -285,18 +285,18 @@ public class Simulator {
 		int data = Util.bitSet2Int(memory.read(dataAddr));
 		setRegister(MBR, data);
 	}
-	
+
 	public void store() {
 		int dataAddr = Util.bitSet2Int(MAR);
 		Word data = Util.int2Word(Util.bitSet2Int(MBR));
 		memory.write(data, dataAddr);
 	}
-	
+
 	public void loadRegisterFromInput(String regStr, String input) {
-		int value = Integer.parseInt(input,2); // opcode||R||IX|I|Address
+		int value = Integer.parseInt(input, 2); // opcode||R||IX|I|Address
 		setRegister(regStr2Name(regStr), value);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -415,11 +415,10 @@ public class Simulator {
 			Util.bitSetDeepCopy(MBR, MBR.getSize(), memory.read(ea), 16);
 			// memory.write(MBR); register MBR to word
 			break;
-		
 
 		case OpCodes.JZ:
 			ea = calculateEA(i, ix, address);
-			
+
 			// cr is c(r) register content
 			int cr = -1;
 			switch (r) {
@@ -436,13 +435,133 @@ public class Simulator {
 				cr = Util.bitSet2Int(R3);
 				break;
 			}
-			
+
 			if (cr == 0) {
 				setRegister(PC, ea); // PC <- EA
 			} else {
 				setRegister(PC, Util.bitSet2Int(PC) + 1); // PC <- PC + 1
 			}
 			break;
+
+		case OpCodes.JNE:
+			ea = calculateEA(i, ix, address);
+
+			// cr is c(r) register content
+			cr = -1;
+			switch (r) {
+			case 0:
+				cr = Util.bitSet2Int(R0);
+				break;
+			case 0b1:
+				cr = Util.bitSet2Int(R1);
+				break;
+			case 0b10:
+				cr = Util.bitSet2Int(R2);
+				break;
+			case 0b11:
+				cr = Util.bitSet2Int(R3);
+				break;
+			}
+
+			if (cr != 0) {
+				setRegister(PC, ea); // PC <- -EA
+			} else {
+				setRegister(PC, Util.bitSet2Int(PC) + 1); // PC <- PC + 1
+			}
+			break;
+
+		case OpCodes.JCC:
+			byte cc = (byte) Util.bitSet2Int(CC);
+			ea = calculateEA(cc, ix, address);
+			if (cc == 1) {
+				setRegister(PC, ea);
+			} else {
+				setRegister(PC, Util.bitSet2Int(PC) + 1); // PC <- PC + 1
+			}
+			break;
+
+		// Jump If Condition Code
+		// cc replaces r for this instruction
+		// cc takes values 0, 1, 2, 3 as above and specifies
+		// the bit in the Condition Code Register to check
+
+		case OpCodes.JMA:
+			ea = calculateEA(i, ix, address);
+
+			// Unconditional Jump To Address
+			// R is ignored in this instruction
+
+			setRegister(PC, ea); // PC <- EA
+			break;
+
+		case OpCodes.JSR:
+			ea = calculateEA(i, ix, address);
+
+			// Jump and Save Return Address
+			setRegister(R3, Util.bitSet2Int(PC) + 1);
+			setRegister(PC, ea);
+			break;
+
+		case OpCodes.RFS:
+			setRegister(R0, address);
+			setRegister(PC, R3);
+			break;
+
+		case OpCodes.SOB:
+			ea = calculateEA(i, ix, address);
+			cr = -1;
+			switch (r) {
+			case 0:
+				cr = Util.bitSet2Int(R0);
+				setRegister(R0, cr - 1);
+				break;
+			case 0b1:
+				cr = Util.bitSet2Int(R1);
+				setRegister(R1, cr - 1);
+				break;
+			case 0b10:
+				cr = Util.bitSet2Int(R2);
+				setRegister(R2, cr - 1);
+				break;
+			case 0b11:
+				cr = Util.bitSet2Int(R3);
+				setRegister(R3, cr - 1);
+				break;
+			}
+
+			if (cr >= 0) {
+				setRegister(PC, ea);
+			} else {
+				setRegister(PC, Util.bitSet2Int(PC) + 1); // PC <- PC + 1
+			}
+			break;
+
+		case OpCodes.JGE:
+
+			ea = calculateEA(i, ix, address);
+			cr = -1;
+
+			switch (r) {
+			case 0:
+				cr = Util.bitSet2Int(R0);
+				break;
+			case 0b1:
+				cr = Util.bitSet2Int(R1);
+				break;
+			case 0b10:
+				cr = Util.bitSet2Int(R2);
+				break;
+			case 0b11:
+				cr = Util.bitSet2Int(R3);
+				break;
+			}
+			if (cr >= 0) {
+				setRegister(PC, ea);
+			} else {
+				setRegister(PC, Util.bitSet2Int(PC) + 1); // PC <- PC + 1
+			}
+			break;
+
 		}
 	}
 
