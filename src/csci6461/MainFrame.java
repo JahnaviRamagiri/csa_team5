@@ -48,9 +48,9 @@ public class MainFrame extends JFrame {
 	private static JTextField textField_IR;
 	
 	private File f = new File("./src/csci6461/input.txt");  
-	private JTextField textField_MFR;
-	private JTextField textField_Priviledged;
-	private JTextField textField_CC;
+	private static JTextField textField_MFR;
+	private static JTextField textField_Priviledged;
+	private static JTextField textField_CC;
 	
 	/*
 	 * Method to get the text field object for respective registers
@@ -88,6 +88,9 @@ public class MainFrame extends JFrame {
 		}
 		if (regStr == "IR") {
 			return textField_IR;
+		}
+		if (regStr == "CC") {
+			return textField_CC;
 		}
 		return null;
 	}
@@ -453,6 +456,11 @@ public class MainFrame extends JFrame {
 		
 		JButton CC_Button = new JButton("LD");
 		CC_Button.setBounds(1104, 392, 85, 21);
+		CC_Button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				simulator.loadRegisterFromInput("CC", textField_input.getText());
+			}
+		});
 		contentPane.add(CC_Button);
 		
 		simulator.init();

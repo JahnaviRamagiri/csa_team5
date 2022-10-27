@@ -259,6 +259,9 @@ public class Simulator {
 		if (r == IR) {
 			return "IR";
 		}
+		if (r == CC) {
+			return "CC";
+		}
 		return null;
 
 	}
@@ -297,6 +300,9 @@ public class Simulator {
 		if (r == "IR") {
 			return IR;
 		}
+		if (r == "CC") {
+			return CC;
+		}
 		return null;
 
 	}
@@ -314,22 +320,16 @@ public class Simulator {
 
 	}
 
-//	public void setGPR(int r, int content) {
-//		switch (r) {
-//		case 0:
-//			setRegister(R0, content);
-//			break;
-//		case 1:
-//			setRegister(R1, content);
-//			break;
-//		case 2:
-//			setRegister(R2, content);
-//			break;
-//		case 3:
-//			setRegister(R3, content);
-//			break;	
-//		}
-//	}
+	public void setCC(int i, boolean bit) {
+		int bitIndex = 3 - i;
+		//OVERFLOW = 0
+		//UNDERFLOW = 1
+		//DIVZERO = 2
+		//EQUALORNOT = 3
+		CC.set(bitIndex, bit);
+		MainFrame.updateUI("CC", CC, 4);
+	}
+	
 	public Register getGPR(int r) {
 		switch (r) {
 		case 0:
@@ -601,20 +601,8 @@ public class Simulator {
 			ea = calculateEA(i, ix, addr);
 			cr = -1;
 
-			switch (r) {
-			case 0:
-				cr = Util.bitSet2Int(R0);
-				break;
-			case 0b1:
-				cr = Util.bitSet2Int(R1);
-				break;
-			case 0b10:
-				cr = Util.bitSet2Int(R2);
-				break;
-			case 0b11:
-				cr = Util.bitSet2Int(R3);
-				break;
-			}
+			cr = Util.bitSet2Int(getGPR(r));
+				
 			if (cr >= 0) {
 				setRegister(PC, ea);
 			} else {
@@ -627,18 +615,15 @@ public class Simulator {
 				int crx = 0;
 				int cry = 0;
 				
-				if (r==0) crx = Util.bitSet2Int(R0);
-				else crx = Util.bitSet2Int(R2);
-				
-				if (ry==0) cry = Util.bitSet2Int(R0);
-				else cry = Util.bitSet2Int(R2);
+				crx = Util.bitSet2Int(getGPR(r));
+				cry = Util.bitSet2Int(getGPR(ry));
 				
 				int result = crx * cry;
 				int upper = result >> 16;
 				int lower = result - (upper << 16);
 				
 				if (upper > 131071) {
-					CC.set(3); // setting OVERFLOW cc(0), which has bitIndex 3
+					setCC(0, true); // setting OVERFLOW cc(0)
 					upper = upper - ((upper >> 16) << 16);
 				} 
 				
@@ -660,14 +645,11 @@ public class Simulator {
 				int crx = 0;
 				int cry = 0;
 				
-				if (r==0) crx = Util.bitSet2Int(R0);
-				else crx = Util.bitSet2Int(R2);
-				
-				if (ry==0) cry = Util.bitSet2Int(R0);
-				else cry = Util.bitSet2Int(R2);
+				crx = Util.bitSet2Int(getGPR(r));
+				cry = Util.bitSet2Int(getGPR(ry));
 				
 				if (cry == 0) {
-					CC.set(1); // setting DIVZERO
+					setCC(2, true); // setting DIVZERO
 					break;
 				} 
 				
@@ -692,9 +674,9 @@ public class Simulator {
 			int crx = Util.bitSet2Int(getGPR(r));
 			int cry = Util.bitSet2Int(getGPR(ry));
 			if (crx == cry) {
-				CC.set(0); // cc(4) <- 1
+				setCC(3, true); // cc(4) <- 1
 			} else {
-				CC.set(0, false);
+				setCC(3, false);
 			}
 			break;
 			
