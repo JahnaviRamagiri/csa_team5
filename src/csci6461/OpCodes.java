@@ -19,4 +19,12 @@ public class OpCodes {
 	
 	public static final byte AMR = 04;
 	
+	public static final byte MLT = 20;
+	public static final byte DVD = 21;
+	public static final byte TRR = 22;
+	public static final byte AND = 23;
+	public static final byte ORR = 24;
+	public static final byte NOT = 25;
+
+	
 }

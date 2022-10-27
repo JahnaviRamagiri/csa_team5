@@ -25,15 +25,33 @@ public class Simulator {
 	private Register MBR;
 	private Register MFR;
 
-	private Register OPCODE;
-	private Register IX;
-	private Register R;
-	private Register I;
-	private Register ADDR;
+//	private Register OPCODE;
+//	private Register IX;
+//	private Register R;
+//	private Register I;
+//	private Register ADDR;
+	
+	private byte opcode;
+	
+	private byte ix;
+	private byte r;
+	private byte i;
+	private byte addr;
+	
+	//private byte rx;
+	private byte ry;
+	
+	private byte al;
+	private byte lr;
+	private byte count;
+	
+	private byte dev_id;
 
 	private File f;
 	private ArrayList<Integer> instructionAddr = new ArrayList<>();
-	private int pcx;
+	
+	// an incremental variable to count the number of instructions executed
+	private int pcx; 
 
 	private Simulator() {
 		// initialize registers
@@ -48,17 +66,17 @@ public class Simulator {
 
 		PC = new Register(12);
 		IR = new Register(16);
-//		CC = new Register(4);
+		CC = new Register(4);
 
 		MAR = new Register(12);
 		MBR = new Register(16);
-//		MFR = new Register(4);
+		MFR = new Register(4);
 
-		OPCODE = new Register(6);
-		IX = new Register(2);
-		R = new Register(2);
-		I = new Register(1);
-		ADDR = new Register(5);
+//		OPCODE = new Register(6);
+//		IX = new Register(2);
+//		R = new Register(2);
+//		I = new Register(1);
+//		ADDR = new Register(5);
 
 		pcx = 0;
 
@@ -141,28 +159,44 @@ public class Simulator {
 	}
 
 	public void irDecode(int ir) {
+		// constructing ir as string
 		String ir_binary = Integer.toBinaryString(ir);
+		int zeros = 16 - ir_binary.length();
+		for (int i = 0; i < zeros; i++) {
+			ir_binary = "0" + ir_binary;
+		}
+		
 //		ir[16] == 
 //			ir[0:5] = opcode
 //			ir[6:7] = Register
 //			ir[8:9] = Index
 //			ir[10] = Instruction
 //			ir[11:15] = Address
-
-		int zeros = 16 - ir_binary.length();
-		for (int i = 0; i < zeros; i++) {
-			ir_binary = "0" + ir_binary;
+		opcode = (byte) Integer.parseInt(ir_binary.substring(0, 6), 2);
+		
+		if ((opcode >= 1 && opcode <= 7) 
+				||  opcode == 41 || opcode == 42 
+				|| (opcode >= 10 && opcode <= 17)) {
+			r = (byte) Integer.parseInt(ir_binary.substring(6, 8), 2);
+			ix = (byte) Integer.parseInt(ir_binary.substring(8, 10), 2);
+			i = (byte) Integer.parseInt(ir_binary.substring(10), 2);
+			addr = (byte) Integer.parseInt(ir_binary.substring(11, 16), 2);
+		} else if (opcode >= 20 &&opcode <= 25) {
+			r = (byte) Integer.parseInt(ir_binary.substring(6, 8), 2);
+			ry = (byte) Integer.parseInt(ir_binary.substring(8, 10), 2);
+		} else if (opcode == 31 || opcode == 32) {
+			r = (byte) Integer.parseInt(ir_binary.substring(6, 8), 2);
+			al = (byte) Integer.parseInt(ir_binary.substring(8, 9), 2);
+			lr = (byte) Integer.parseInt(ir_binary.substring(9, 10), 2);
+			count = (byte) Integer.parseInt(ir_binary.substring(12, 16), 2);
+		} else if (opcode >= 61 && opcode <= 63) {
+			r = (byte) Integer.parseInt(ir_binary.substring(6, 8), 2);
+			dev_id = (byte) Integer.parseInt(ir_binary.substring(11, 16), 2);
 		}
-
-		setRegister(OPCODE, Integer.parseInt(ir_binary.substring(0, 6), 2));
-		setRegister(R, Integer.parseInt(ir_binary.substring(6, 8), 2));
-		setRegister(IX, Integer.parseInt(ir_binary.substring(8, 10), 2));
-		setRegister(I, Integer.parseInt(ir_binary.substring(10), 2));
-		setRegister(ADDR, Integer.parseInt(ir_binary.substring(11, 16), 2));
 
 	}
 
-	public static int calculateEA(byte i, byte ix, int address) {
+	public static int calculateEA(byte i, byte ix, byte address) {
 		int ea = 0; // return value
 		// no indirect
 		if (i == 0) {
@@ -280,6 +314,36 @@ public class Simulator {
 
 	}
 
+//	public void setGPR(int r, int content) {
+//		switch (r) {
+//		case 0:
+//			setRegister(R0, content);
+//			break;
+//		case 1:
+//			setRegister(R1, content);
+//			break;
+//		case 2:
+//			setRegister(R2, content);
+//			break;
+//		case 3:
+//			setRegister(R3, content);
+//			break;	
+//		}
+//	}
+	public Register getGPR(int r) {
+		switch (r) {
+		case 0:
+			return R0;
+		case 1:
+			return R1;
+		case 2:
+			return R2;
+		case 3:
+			return R3;
+		}
+		return R0;
+	}
+	
 	public void load() {
 		int dataAddr = Util.bitSet2Int(MAR);
 		int data = Util.bitSet2Int(memory.read(dataAddr));
@@ -302,14 +366,10 @@ public class Simulator {
 	 */
 	public void operation() {
 		int ea;
-		byte opcode = (byte) Util.bitSet2Int(OPCODE);
-		byte r = (byte) Util.bitSet2Int(R);
-		byte i = (byte) Util.bitSet2Int(I);
-		byte ix = (byte) Util.bitSet2Int(IX);
-		int address = Util.bitSet2Int(ADDR);
+
 		switch (opcode) {
 		case OpCodes.LDR:
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 			int dataAddr = Util.bitSet2Int(MAR);
 			int data = Util.bitSet2Int(memory.read(dataAddr));
@@ -331,7 +391,7 @@ public class Simulator {
 			}
 			break;
 		case OpCodes.STR:
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 			switch (r) {
 			case 0:
@@ -353,7 +413,7 @@ public class Simulator {
 
 		case OpCodes.LDA:
 
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 
 			setRegister(MBR, ea);
@@ -374,7 +434,7 @@ public class Simulator {
 			break;
 
 		case OpCodes.LDX:
-			ea = calculateEA((byte) 0, ix, address);
+			ea = calculateEA((byte) 0, ix, addr);
 			setRegister(MAR, ea);
 			int dataAddr_1 = Util.bitSet2Int(MAR);
 			int data_1 = Util.bitSet2Int(memory.read(dataAddr_1));
@@ -395,7 +455,7 @@ public class Simulator {
 			}
 			break;
 		case OpCodes.STX:
-			ea = calculateEA((byte) 0, ix, address);
+			ea = calculateEA((byte) 0, ix, addr);
 			setRegister(MAR, ea);
 
 			switch (r) {
@@ -417,7 +477,7 @@ public class Simulator {
 			break;
 
 		case OpCodes.JZ:
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 
 			// cr is c(r) register content
 			int cr = -1;
@@ -444,7 +504,7 @@ public class Simulator {
 			break;
 
 		case OpCodes.JNE:
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 
 			// cr is c(r) register content
 			cr = -1;
@@ -471,8 +531,8 @@ public class Simulator {
 			break;
 
 		case OpCodes.JCC:
-			byte cc = (byte) Util.bitSet2Int(CC);
-			ea = calculateEA(cc, ix, address);
+			byte cc = (byte) ((CC.get(3 - r))? 1 : 0); // bitset reverse indexed so 3-r
+			ea = calculateEA(r, ix, addr);
 			if (cc == 1) {
 				setRegister(PC, ea);
 			} else {
@@ -486,7 +546,7 @@ public class Simulator {
 		// the bit in the Condition Code Register to check
 
 		case OpCodes.JMA:
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 
 			// Unconditional Jump To Address
 			// R is ignored in this instruction
@@ -495,7 +555,7 @@ public class Simulator {
 			break;
 
 		case OpCodes.JSR:
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 
 			// Jump and Save Return Address
 			setRegister(R3, Util.bitSet2Int(PC) + 1);
@@ -503,12 +563,12 @@ public class Simulator {
 			break;
 
 		case OpCodes.RFS:
-			setRegister(R0, address);
+			setRegister(R0, addr);
 			setRegister(PC, R3);
 			break;
 
 		case OpCodes.SOB:
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 			cr = -1;
 			switch (r) {
 			case 0:
@@ -538,7 +598,7 @@ public class Simulator {
 
 		case OpCodes.JGE:
 
-			ea = calculateEA(i, ix, address);
+			ea = calculateEA(i, ix, addr);
 			cr = -1;
 
 			switch (r) {
@@ -561,8 +621,100 @@ public class Simulator {
 				setRegister(PC, Util.bitSet2Int(PC) + 1); // PC <- PC + 1
 			}
 			break;
-
+			
+		case OpCodes.MLT:
+			if ((r == 0 || r == 2) && (ry == 0 || ry == 2)) {
+				int crx = 0;
+				int cry = 0;
+				
+				if (r==0) crx = Util.bitSet2Int(R0);
+				else crx = Util.bitSet2Int(R2);
+				
+				if (ry==0) cry = Util.bitSet2Int(R0);
+				else cry = Util.bitSet2Int(R2);
+				
+				int result = crx * cry;
+				int upper = result >> 16;
+				int lower = result - (upper << 16);
+				
+				if (upper > 131071) {
+					CC.set(3); // setting OVERFLOW cc(0), which has bitIndex 3
+					upper = upper - ((upper >> 16) << 16);
+				} 
+				
+				if (r==0) {
+					setRegister(R0, upper);
+					setRegister(R1, lower);
+				}
+				else {
+					setRegister(R2, upper);
+					setRegister(R3, lower);
+				}
+			} else {
+				// some kind of machine fault?
+			}
+			break;
+			
+		case OpCodes.DVD:
+			if ((r == 0 || r == 2) && (ry == 0 || ry == 2)) {
+				int crx = 0;
+				int cry = 0;
+				
+				if (r==0) crx = Util.bitSet2Int(R0);
+				else crx = Util.bitSet2Int(R2);
+				
+				if (ry==0) cry = Util.bitSet2Int(R0);
+				else cry = Util.bitSet2Int(R2);
+				
+				if (cry == 0) {
+					CC.set(1); // setting DIVZERO
+					break;
+				} 
+				
+				int result = crx / cry;
+				int upper = result;
+				int lower = crx - (cry * upper);
+				
+				if (r==0) {
+					setRegister(R0, upper);
+					setRegister(R1, lower);
+				}
+				else {
+					setRegister(R2, upper);
+					setRegister(R3, lower);
+				}
+			} else {
+				// some kind of machine fault?
+			}
+			break;
+			
+		case OpCodes.TRR:
+			int crx = Util.bitSet2Int(getGPR(r));
+			int cry = Util.bitSet2Int(getGPR(ry));
+			if (crx == cry) {
+				CC.set(0); // cc(4) <- 1
+			} else {
+				CC.set(0, false);
+			}
+			break;
+			
+		case OpCodes.AND:
+			getGPR(r).and(getGPR(ry)); 
+			break;
+			
+		case OpCodes.ORR:
+			getGPR(r).or(getGPR(ry));
+			break;
+			
+		case OpCodes.NOT:
+			getGPR(r).flip(0, getGPR(r).length());
+			break;
+			
+			
 		}
+		
+		
+		
 	}
 
 }
