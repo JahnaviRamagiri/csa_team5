@@ -50,6 +50,7 @@ public class MainFrame extends JFrame {
 	private File f = new File("./src/csci6461/input.txt");  
 	private JTextField textField_MFR;
 	private JTextField textField_Priviledged;
+	private JTextField textField_CC;
 	
 	/*
 	 * Method to get the text field object for respective registers
@@ -374,7 +375,7 @@ public class MainFrame extends JFrame {
 				simulator.load();
 			}
 		});
-		btnNewButton_3.setBounds(781, 404, 74, 37);
+		btnNewButton_3.setBounds(775, 531, 74, 37);
 		contentPane.add(btnNewButton_3);
 		
 		JButton btnNewButton_4 = new JButton("Store");
@@ -383,7 +384,7 @@ public class MainFrame extends JFrame {
 				simulator.store();
 			}
 		});
-		btnNewButton_4.setBounds(781, 447, 74, 37);
+		btnNewButton_4.setBounds(775, 574, 74, 37);
 		
 		contentPane.add(btnNewButton_4);
 		
@@ -395,7 +396,7 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		SS_button.setBounds(962, 416, 94, 59);
+		SS_button.setBounds(956, 543, 94, 59);
 		contentPane.add(SS_button);
 		
 		JButton Run_button = new JButton("Run");
@@ -405,7 +406,7 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		Run_button.setBounds(1066, 416, 94, 59);
+		Run_button.setBounds(1060, 543, 94, 59);
 		contentPane.add(Run_button);
 		
 		JButton Init_Button = new JButton("INIT");
@@ -414,7 +415,7 @@ public class MainFrame extends JFrame {
 				simulator.init();
 			}
 		});
-		Init_Button.setBounds(862, 427, 74, 37);
+		Init_Button.setBounds(856, 554, 74, 37);
 		contentPane.add(Init_Button);
 		
 		JLabel lblNewLabel_4_1_1_2 = new JLabel("MFR");
@@ -439,7 +440,21 @@ public class MainFrame extends JFrame {
 		textField_Priviledged.setBounds(781, 343, 313, 19);
 		contentPane.add(textField_Priviledged);
 		
+		JLabel lblNewLabel_4_1_1_3_1 = new JLabel("CC");
+		lblNewLabel_4_1_1_3_1.setBounds(670, 390, 85, 24);
+		contentPane.add(lblNewLabel_4_1_1_3_1);
+		
+		textField_CC = new JTextField();
+		textField_CC.setText("0000");
+		textField_CC.setEditable(false);
+		textField_CC.setColumns(10);
+		textField_CC.setBounds(781, 393, 313, 19);
+		contentPane.add(textField_CC);
+		
+		JButton CC_Button = new JButton("LD");
+		CC_Button.setBounds(1104, 392, 85, 21);
+		contentPane.add(CC_Button);
+		
 		simulator.init();
 	}
-	
 }
