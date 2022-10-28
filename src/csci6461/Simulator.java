@@ -692,7 +692,47 @@ public class Simulator {
 			getGPR(r).flip(0, getGPR(r).length());
 			break;
 			
+		case OpCodes.AMR:
+			ea = calculateEA(i, ix, addr);
+			setRegister(MAR, ea);
+			dataAddr = Util.bitSet2Int(MAR);
+			data = Util.bitSet2Int(memory.read(dataAddr));
+			setRegister(MBR, data);
+			int result = Util.bitSet2Int(getGPR(r)) + data;
+			setRegister(getGPR(r), result);
+
+			break;
 			
+		case OpCodes.SMR:
+			// TODO: negative number and UNDERFLOW
+			ea = calculateEA(i, ix, addr);
+			setRegister(MAR, ea);
+			dataAddr = Util.bitSet2Int(MAR);
+			data = Util.bitSet2Int(memory.read(dataAddr));
+			setRegister(MBR, data);
+			result = Util.bitSet2Int(getGPR(r)) - data;
+			setRegister(getGPR(r), result);
+
+			break;
+
+		case OpCodes.AIR:
+			
+			result = Util.bitSet2Int(getGPR(r)) + addr;
+			setRegister(getGPR(r), result);
+			break;
+
+		case OpCodes.SIR:
+			
+			// TODO: negative number and UNDERFLOW
+			result = Util.bitSet2Int(getGPR(r)) - addr;
+			setRegister(getGPR(r), result);
+			break;
+			
+		case OpCodes.SRC:
+			break;
+			
+		case OpCodes.RRC:
+			break;
 		}
 		
 		

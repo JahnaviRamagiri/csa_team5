@@ -18,6 +18,9 @@ public class OpCodes {
 	public static final byte JGE = 17;
 	
 	public static final byte AMR = 04;
+	public static final byte SMR = 05;
+	public static final byte AIR = 06;
+	public static final byte SIR = 07;
 	
 	public static final byte MLT = 20;
 	public static final byte DVD = 21;
@@ -26,5 +29,9 @@ public class OpCodes {
 	public static final byte ORR = 24;
 	public static final byte NOT = 25;
 
+	public static final byte SRC = 31;
+	public static final byte RRC = 32;
 	
+	public static final byte IN = 61;
+	public static final byte OUT = 62;
 }
