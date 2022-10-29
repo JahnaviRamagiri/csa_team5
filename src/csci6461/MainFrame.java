@@ -51,10 +51,14 @@ public class MainFrame extends JFrame {
 	private static JTextField textField_MFR;
 	private static JTextField textField_Priviledged;
 	private static JTextField textField_CC;
+	private static JTextField textField_Keyboard;
+	private static JTextField textField_Printer;
 	
 	/*
 	 * Method to get the text field object for respective registers
 	 */
+	
+	
 	private static JTextField getRegisterGUI(String regStr) {
 		if (regStr == "R0") {
 			return textField_GPR0;
@@ -113,7 +117,9 @@ public class MainFrame extends JFrame {
 		reg.setText(result);
 	}
 		
-
+	public static void getIOText() {
+		String textField_Keyboard.getText()
+	}
 	
 	/**
 	 * Launch the application.
@@ -139,7 +145,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		setTitle("Simulator UI");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1377, 698);
+		setBounds(100, 100, 1471, 924);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -462,6 +468,25 @@ public class MainFrame extends JFrame {
 			}
 		});
 		contentPane.add(CC_Button);
+		
+		textField_Keyboard = new JTextField();
+		textField_Keyboard.setBounds(30, 531, 121, 24);
+		contentPane.add(textField_Keyboard);
+		textField_Keyboard.setColumns(10);
+		
+		JLabel lblNewLabel_4 = new JLabel("Keyboard Console");
+		lblNewLabel_4.setBounds(40, 566, 94, 13);
+		contentPane.add(lblNewLabel_4);
+		
+		textField_Printer = new JTextField();
+		textField_Printer.setEditable(false);
+		textField_Printer.setColumns(10);
+		textField_Printer.setBounds(30, 624, 121, 118);
+		contentPane.add(textField_Printer);
+		
+		JLabel lblNewLabel_4_2 = new JLabel("Printer Display");
+		lblNewLabel_4_2.setBounds(49, 752, 85, 17);
+		contentPane.add(lblNewLabel_4_2);
 		
 		simulator.init();
 	}

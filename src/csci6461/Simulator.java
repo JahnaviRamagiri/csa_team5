@@ -46,6 +46,8 @@ public class Simulator {
 	private byte count;
 	
 	private byte dev_id;
+//	private byte AL;
+//	private byte LR;
 
 	private File f;
 	private ArrayList<Integer> instructionAddr = new ArrayList<>();
@@ -729,9 +731,97 @@ public class Simulator {
 			break;
 			
 		case OpCodes.SRC:
+			switch(al) { // Arithemetic Shift
+			case 0:
+				switch(lr) { // Left shift
+				case 0:
+					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) << count);
+					break;
+				case 1:
+					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >> count);
+					break;
+					
+					
+					
+				}
+				break;
+			case 1: // Logical shift
+				switch(lr) {
+				case 0:
+					// code for left shift
+//					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) <<< count);
+					break;
+				case 1:
+					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >>> count);
+					break;
+				}
+				
+				break;
+			}
+			
 			break;
 			
 		case OpCodes.RRC:
+//			switch(al) { // Arithemetic Shift
+//			case 0:
+//				switch(lr) { // Left shift
+//				case 0:
+//					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) << count);
+//					break;
+//				case 1:
+//					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >> count);
+//					break;
+//					
+//					
+//					
+//				}
+//				break;
+//			case 1: // Logical shift
+//				switch(lr) {
+//				case 0:
+//					// code for left shift
+////					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) <<< count);
+//					break;
+//				case 1:
+//					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >>> count);
+//					break;
+//				}
+//				
+//				break;
+//			}
+
+			break;
+			
+		case OpCodes.IN:
+			// Get devid
+			// devid = 0 keyboard
+
+			if (dev_id == 0)
+				// Convert to numeric
+				String inp = textField_keyboard.getText();
+			switch (r) {
+			case 0:
+				setRegister(R0, inp);
+				break;
+			case 0b1:
+				setRegister(R1, inp);
+				break;
+			case 0b10:
+				setRegister(R2, inp);
+				break;
+			case 0b11:
+				setRegister(R3, inp);
+				break;
+
+			}
+			break;
+			
+		case OpCodes.OUT:
+			// devid = 1 printer
+			if (dev_id == 1):
+				// set printer with register values
+
+
 			break;
 		}
 		
