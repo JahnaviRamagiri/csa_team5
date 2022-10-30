@@ -324,6 +324,12 @@ public class Simulator {
 		setRegister(r, srcData);
 
 	}
+	
+	public void setRegisterSigned(Register r, int content) {
+		BitSet w = Util.int2BitSetSigned(content);
+		Util.bitSetDeepCopy(w, 16, r, r.getSize());
+		MainFrame.updateUI(regName2Str(r), r, r.getSize());
+	}
 
 	public void setCC(int i, boolean bit) {
 		int bitIndex = 3 - i;
@@ -538,7 +544,7 @@ public class Simulator {
 				int upper = result >> 16;
 				int lower = result - (upper << 16);
 				
-				if (upper > 131071) {
+				if (upper > (2^16 - 1)) {
 					setCC(0, true); // setting OVERFLOW cc(0)
 					upper = upper - ((upper >> 16) << 16);
 				} 
@@ -624,40 +630,37 @@ public class Simulator {
 			dataAddr = Util.bitSet2Int(MAR);
 			data = Util.bitSet2Int(memory.read(dataAddr));
 			setRegister(MBR, data);
-			int result = Util.bitSet2Int(getGPR(r)) + data;
-			setRegister(getGPR(r), result);
+			int result = Util.bitSet2IntSigned(getGPR(r)) + Util.bitSet2IntSigned(MBR);
+			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.SMR:
-			// TODO: negative number and UNDERFLOW
+			
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 			dataAddr = Util.bitSet2Int(MAR);
 			data = Util.bitSet2Int(memory.read(dataAddr));
 			setRegister(MBR, data);
 			
-			result = Util.bitSet2Int(getGPR(r)) - data;
+			result = Util.bitSet2IntSigned(getGPR(r)) - Util.bitSet2IntSigned(MBR);
 			
-			if (result < 0) {
-				setCC(1, true);
-			} 
-			setRegister(getGPR(r), result);
+			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			
 			break;
 
 		case OpCodes.AIR:
 			
-			result = Util.bitSet2Int(getGPR(r)) + addr;
-			setRegister(getGPR(r), result);
+			result = Util.bitSet2IntSigned(getGPR(r)) + addr;
+			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
 		case OpCodes.SIR:
-			// TODO: negative number and UNDERFLOW
-			result = Util.bitSet2Int(getGPR(r)) - addr;
-			setRegister(getGPR(r), result);
+			
+			result = Util.bitSet2IntSigned(getGPR(r)) - addr;
+			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
