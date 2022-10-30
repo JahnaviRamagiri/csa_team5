@@ -379,40 +379,13 @@ public class Simulator {
 			int dataAddr = Util.bitSet2Int(MAR);
 			int data = Util.bitSet2Int(memory.read(dataAddr));
 			setRegister(MBR, data);
-			switch (r) {
-			case 0:
-				setRegister(R0, MBR);
-				break;
-			case 0b1:
-				setRegister(R1, MBR);
-				break;
-			case 0b10:
-				setRegister(R2, MBR);
-				break;
-			case 0b11:
-				setRegister(R3, MBR);
-				break;
-
-			}
+			setRegister(getGPR(r), MBR);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 		case OpCodes.STR:
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
-			switch (r) {
-			case 0:
-				setRegister(MBR, R0);
-				break;
-			case 0b1:
-				setRegister(MBR, R1);
-				break;
-			case 0b10:
-				setRegister(MBR, R2);
-				break;
-			case 0b11:
-				setRegister(MBR, R3);
-				break;
-			}
+			setRegister(MBR, getGPR(r));
 			Util.bitSetDeepCopy(MBR, MBR.getSize(), memory.read(ea), 16);
 //		     memory.write(MBR,ea); // register MBR to word
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
@@ -424,20 +397,8 @@ public class Simulator {
 			setRegister(MAR, ea);
 
 			setRegister(MBR, ea);
-			switch (r) {
-			case 0:
-				setRegister(R0, MBR);
-				break;
-			case 0b1:
-				setRegister(R1, MBR);
-				break;
-			case 0b10:
-				setRegister(R2, MBR);
-				break;
-			case 0b11:
-				setRegister(R3, MBR);
-				break;
-			}
+			
+			setRegister(getGPR(r), MBR);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
@@ -447,40 +408,15 @@ public class Simulator {
 			int dataAddr_1 = Util.bitSet2Int(MAR);
 			int data_1 = Util.bitSet2Int(memory.read(dataAddr_1));
 			setRegister(MBR, data_1);
-			switch (r) {
-			case 0:
-				setRegister(R0, MBR);
-				break;
-			case 0b1:
-				setRegister(R1, MBR);
-				break;
-			case 0b10:
-				setRegister(R2, MBR);
-				break;
-			case 0b11:
-				setRegister(R3, MBR);
-				break;
-			}
+			
+			setRegister(getGPR(r), MBR);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 		case OpCodes.STX:
 			ea = calculateEA((byte) 0, ix, addr);
 			setRegister(MAR, ea);
 
-			switch (r) {
-			case 0:
-				setRegister(MBR, R0);
-				break;
-			case 0b1:
-				setRegister(MBR, R1);
-				break;
-			case 0b10:
-				setRegister(MBR, R2);
-				break;
-			case 0b11:
-				setRegister(MBR, R3);
-				break;
-			}
+			setRegister(MBR, getGPR(r));
 			Util.bitSetDeepCopy(MBR, MBR.getSize(), memory.read(ea), 16);
 			// memory.write(MBR); register MBR to word
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
@@ -517,21 +453,7 @@ public class Simulator {
 			ea = calculateEA(i, ix, addr);
 
 			// cr is c(r) register content
-			cr = -1;
-			switch (r) {
-			case 0:
-				cr = Util.bitSet2Int(R0);
-				break;
-			case 0b1:
-				cr = Util.bitSet2Int(R1);
-				break;
-			case 0b10:
-				cr = Util.bitSet2Int(R2);
-				break;
-			case 0b11:
-				cr = Util.bitSet2Int(R3);
-				break;
-			}
+			cr = Util.bitSet2Int(getGPR(r));
 
 			if (cr != 0) {
 				setRegister(PC, ea); // PC <- -EA
@@ -579,25 +501,9 @@ public class Simulator {
 
 		case OpCodes.SOB:
 			ea = calculateEA(i, ix, addr);
-			cr = -1;
-			switch (r) {
-			case 0:
-				cr = Util.bitSet2Int(R0);
-				setRegister(R0, cr - 1);
-				break;
-			case 0b1:
-				cr = Util.bitSet2Int(R1);
-				setRegister(R1, cr - 1);
-				break;
-			case 0b10:
-				cr = Util.bitSet2Int(R2);
-				setRegister(R2, cr - 1);
-				break;
-			case 0b11:
-				cr = Util.bitSet2Int(R3);
-				setRegister(R3, cr - 1);
-				break;
-			}
+			
+			cr = Util.bitSet2Int(getGPR(r));
+			setRegister(getGPR(r), cr - 1);
 
 			if (cr >= 0) {
 				setRegister(PC, ea);
