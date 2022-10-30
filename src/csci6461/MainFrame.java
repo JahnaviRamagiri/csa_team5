@@ -15,6 +15,7 @@ import java.util.BitSet;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
+import java.awt.Color;
 
 public class MainFrame extends JFrame {
 	
@@ -53,8 +54,8 @@ public class MainFrame extends JFrame {
 	private static JTextField textField_CC;
 	private static JTextField textField_Keyboard;
 	private static JTextField textField_Printer;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField textField_Tag;
+	private JTextField textField_TagValue;
 	
 	/*
 	 * Method to get the text field object for respective registers
@@ -232,7 +233,8 @@ public class MainFrame extends JFrame {
 		textField_input.setColumns(10);
 		
 		JLabel lblNewLabel_3 = new JLabel("Input");
-		lblNewLabel_3.setBounds(228, 381, 147, 13);
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3.setBounds(91, 381, 358, 13);
 		contentPane.add(lblNewLabel_3);
 		
 		JLabel lblNewLabel_2_1 = new JLabel("GPR 3");
@@ -396,7 +398,7 @@ public class MainFrame extends JFrame {
 				simulator.load();
 			}
 		});
-		btnNewButton_3.setBounds(775, 424, 74, 37);
+		btnNewButton_3.setBounds(758, 354, 74, 37);
 		contentPane.add(btnNewButton_3);
 		
 		JButton btnNewButton_4 = new JButton("Store");
@@ -405,7 +407,7 @@ public class MainFrame extends JFrame {
 				simulator.store();
 			}
 		});
-		btnNewButton_4.setBounds(775, 467, 74, 37);
+		btnNewButton_4.setBounds(758, 397, 74, 37);
 		
 		contentPane.add(btnNewButton_4);
 		
@@ -417,7 +419,7 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		SS_button.setBounds(956, 436, 94, 59);
+		SS_button.setBounds(939, 366, 94, 59);
 		contentPane.add(SS_button);
 		
 		JButton Run_button = new JButton("Run");
@@ -427,7 +429,7 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		Run_button.setBounds(1060, 436, 94, 59);
+		Run_button.setBounds(1043, 366, 94, 59);
 		contentPane.add(Run_button);
 		
 		JButton Init_Button = new JButton("INIT");
@@ -436,7 +438,7 @@ public class MainFrame extends JFrame {
 				simulator.init();
 			}
 		});
-		Init_Button.setBounds(856, 447, 74, 37);
+		Init_Button.setBounds(839, 377, 74, 37);
 		contentPane.add(Init_Button);
 		
 		JLabel lblNewLabel_4_1_1_2 = new JLabel("MFR");
@@ -482,35 +484,39 @@ public class MainFrame extends JFrame {
 		contentPane.add(CC_Button);
 		
 		textField_Keyboard = new JTextField();
-		textField_Keyboard.setBounds(831, 564, 121, 24);
+		textField_Keyboard.setBounds(798, 534, 121, 24);
 		contentPane.add(textField_Keyboard);
 		textField_Keyboard.setColumns(10);
 		
 		JLabel lblNewLabel_4 = new JLabel("Keyboard Console");
 		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_4.setBounds(831, 602, 121, 13);
+		lblNewLabel_4.setBounds(798, 572, 121, 13);
 		contentPane.add(lblNewLabel_4);
 		
 		textField_Printer = new JTextField();
 		textField_Printer.setEditable(false);
 		textField_Printer.setColumns(10);
-		textField_Printer.setBounds(1033, 517, 121, 118);
+		textField_Printer.setBounds(1000, 487, 121, 118);
 		contentPane.add(textField_Printer);
 		
 		JLabel lblNewLabel_4_2 = new JLabel("Printer Display");
 		lblNewLabel_4_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_4_2.setBounds(1037, 645, 117, 17);
+		lblNewLabel_4_2.setBounds(1004, 615, 117, 17);
 		contentPane.add(lblNewLabel_4_2);
 		
-		textField = new JTextField();
-		textField.setBounds(25, 471, 223, 183);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		textField_Tag = new JTextField();
+		textField_Tag.setBackground(Color.WHITE);
+		textField_Tag.setEditable(false);
+		textField_Tag.setBounds(25, 471, 223, 183);
+		contentPane.add(textField_Tag);
+		textField_Tag.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(279, 467, 223, 183);
-		contentPane.add(textField_1);
-		textField_1.setColumns(10);
+		textField_TagValue = new JTextField();
+		textField_TagValue.setBackground(Color.WHITE);
+		textField_TagValue.setEditable(false);
+		textField_TagValue.setBounds(279, 467, 223, 183);
+		contentPane.add(textField_TagValue);
+		textField_TagValue.setColumns(10);
 		
 		JLabel lblNewLabel_5 = new JLabel("CACHE");
 		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
@@ -526,6 +532,14 @@ public class MainFrame extends JFrame {
 		lblNewLabel_6_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_6_1.setBounds(279, 448, 223, 13);
 		contentPane.add(lblNewLabel_6_1);
+		
+		JButton Program1_Button = new JButton("Program 1");
+		Program1_Button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		Program1_Button.setBounds(876, 444, 157, 21);
+		contentPane.add(Program1_Button);
 		
 		simulator.init();
 	}
