@@ -709,6 +709,9 @@ public class Simulator {
 			}
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
+		
+		case OpCodes.HLT:
+			break;
 		}
 		
 		

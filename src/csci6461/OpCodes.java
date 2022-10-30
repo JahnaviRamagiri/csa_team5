@@ -1,6 +1,7 @@
 package csci6461;
 
 public class OpCodes {
+	public static final byte HLT = 00;
 	
 	public static final byte LDR = 01;
 	public static final byte STR = 02;
