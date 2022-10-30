@@ -50,10 +50,10 @@ public class Simulator {
 //	private byte LR;
 
 	private File f;
-	private ArrayList<Integer> instructionAddr = new ArrayList<>();
+//	private ArrayList<Integer> instructionAddr = new ArrayList<>();
 	
-	// an incremental variable to count the number of instructions executed
-	private int pcx; 
+	// an incremental variable to count the number of instructions read
+	private int lines; 
 
 	private Simulator() {
 		// initialize registers
@@ -80,7 +80,7 @@ public class Simulator {
 //		I = new Register(1);
 //		ADDR = new Register(5);
 
-		pcx = 0;
+		lines = 0;
 
 	}
 
@@ -91,9 +91,9 @@ public class Simulator {
 	private static Memory memory = Memory.getInstance();
 
 	public void init() {
-		instructionAddr.clear();
-		pcx = 0;
-		loadFile("./src/csci6461/input.txt");
+//		instructionAddr.clear();
+		lines = 0;
+		loadFile("./src/csci6461/program1.txt");
 		try {
 			Scanner s = new Scanner(f);
 			while (s.hasNextLine()) {
@@ -101,10 +101,14 @@ public class Simulator {
 				String[] sa = s1.split(" ");
 				// setting the memory
 				int addr = Integer.parseInt(sa[0].trim(), 16);
-				instructionAddr.add(addr); // store addresses of instructions
+				
+				if (lines == 0) {
+					setRegister(PC, addr);
+				}
+//				instructionAddr.add(addr); // store addresses of instructions
 				Word content = Util.int2Word(Integer.parseInt(sa[1].trim(), 16));
 				memory.write(content, addr);
-
+				lines++;
 			}
 			s.close();
 		} catch (Exception ex) {
@@ -117,26 +121,26 @@ public class Simulator {
 		setRegister(X1, 0);
 		setRegister(X2, 0);
 		setRegister(X3, 0);
-		setRegister(PC, 0);
 		setRegister(MAR, 0);
 		setRegister(MBR, 0);
 		setRegister(IR, 0);
+		setRegister(CC, 0);
 	}
 
 	public int singleStep() {
-		if (pcx >= instructionAddr.size()) {
-			System.out.println("All instructions executed");
-			return 1;
-		}
+//		if (pcx >= instructionAddr.size()) {
+//			System.out.println("All instructions executed");
+//			return 1;
+//		}
 		// fetch instruction
-		loadInstruction(instructionAddr.get(pcx));
+		loadInstruction();
 		// ir decode
 
 		int ir = Util.bitSet2Int(IR);
 		irDecode(ir);
 		// operation
 		getInstance().operation();
-		pcx++;
+
 		return 0;
 	}
 
@@ -149,8 +153,7 @@ public class Simulator {
 	 * 
 	 * @param input
 	 */
-	public void loadInstruction(int address) {
-		setRegister(PC, address);
+	public void loadInstruction() {
 
 		setRegister(MAR, PC);
 
@@ -391,6 +394,7 @@ public class Simulator {
 				break;
 
 			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 		case OpCodes.STR:
 			ea = calculateEA(i, ix, addr);
@@ -411,6 +415,7 @@ public class Simulator {
 			}
 			Util.bitSetDeepCopy(MBR, MBR.getSize(), memory.read(ea), 16);
 //		     memory.write(MBR,ea); // register MBR to word
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
 		case OpCodes.LDA:
@@ -433,6 +438,7 @@ public class Simulator {
 				setRegister(R3, MBR);
 				break;
 			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
 		case OpCodes.LDX:
@@ -455,6 +461,7 @@ public class Simulator {
 				setRegister(R3, MBR);
 				break;
 			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 		case OpCodes.STX:
 			ea = calculateEA((byte) 0, ix, addr);
@@ -476,6 +483,7 @@ public class Simulator {
 			}
 			Util.bitSetDeepCopy(MBR, MBR.getSize(), memory.read(ea), 16);
 			// memory.write(MBR); register MBR to word
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
 		case OpCodes.JZ:
@@ -640,6 +648,7 @@ public class Simulator {
 			} else {
 				// some kind of machine fault?
 			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.DVD:
@@ -652,6 +661,7 @@ public class Simulator {
 				
 				if (cry == 0) {
 					setCC(2, true); // setting DIVZERO
+					setRegister(PC, Util.bitSet2Int(PC) + 1);
 					break;
 				} 
 				
@@ -670,6 +680,7 @@ public class Simulator {
 			} else {
 				// some kind of machine fault?
 			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.TRR:
@@ -680,18 +691,25 @@ public class Simulator {
 			} else {
 				setCC(3, false);
 			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.AND:
 			getGPR(r).and(getGPR(ry)); 
+			setRegister(getGPR(r), getGPR(r));
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.ORR:
 			getGPR(r).or(getGPR(ry));
+			setRegister(getGPR(r), getGPR(r));
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.NOT:
 			getGPR(r).flip(0, getGPR(r).length());
+			setRegister(getGPR(r), getGPR(r));
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.AMR:
@@ -702,7 +720,7 @@ public class Simulator {
 			setRegister(MBR, data);
 			int result = Util.bitSet2Int(getGPR(r)) + data;
 			setRegister(getGPR(r), result);
-
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.SMR:
@@ -712,116 +730,78 @@ public class Simulator {
 			dataAddr = Util.bitSet2Int(MAR);
 			data = Util.bitSet2Int(memory.read(dataAddr));
 			setRegister(MBR, data);
+			
 			result = Util.bitSet2Int(getGPR(r)) - data;
+			
+			if (result < 0) {
+				setCC(1, true);
+			} 
 			setRegister(getGPR(r), result);
-
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
+			
 			break;
 
 		case OpCodes.AIR:
 			
 			result = Util.bitSet2Int(getGPR(r)) + addr;
 			setRegister(getGPR(r), result);
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
 		case OpCodes.SIR:
-			
 			// TODO: negative number and UNDERFLOW
 			result = Util.bitSet2Int(getGPR(r)) - addr;
 			setRegister(getGPR(r), result);
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.SRC:
-			switch(al) { // Arithemetic Shift
-			case 0:
-				switch(lr) { // Left shift
-				case 0:
+			// arithmetic
+			if (al == 0) {
+				if (lr == 0)
 					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) << count);
-					break;
-				case 1:
+				else if (lr == 1)
 					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >> count);
-					break;
-					
-					
-					
-				}
-				break;
-			case 1: // Logical shift
-				switch(lr) {
-				case 0:
-					// code for left shift
-//					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) <<< count);
-					break;
-				case 1:
-					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >>> count);
-					break;
-				}
-				
-				break;
 			}
-			
+			// logical
+			else if (al == 1) {
+				if (lr == 0)
+					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) << count);
+				else if (lr == 1)
+					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >>> count);
+			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.RRC:
-//			switch(al) { // Arithemetic Shift
-//			case 0:
-//				switch(lr) { // Left shift
-//				case 0:
-//					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) << count);
-//					break;
-//				case 1:
-//					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >> count);
-//					break;
-//					
-//					
-//					
-//				}
-//				break;
-//			case 1: // Logical shift
-//				switch(lr) {
-//				case 0:
-//					// code for left shift
-////					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) <<< count);
-//					break;
-//				case 1:
-//					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >>> count);
-//					break;
-//				}
-//				
-//				break;
-//			}
-
+			cr = Util.bitSet2Int(getGPR(r));
+			if (al == 1) {
+				if (lr == 0)
+					setRegister(getGPR(r), (cr << count) | (cr >> (16 - count)));
+				else if (lr == 1)
+					setRegister(getGPR(r), (cr >> count) | (cr << (16 - count)));
+			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
+		
 			break;
 			
 		case OpCodes.IN:
 			// Get devid
 			// devid = 0 keyboard
-
-			if (dev_id == 0)
-				// Convert to numeric
-				String inp = textField_keyboard.getText();
-			switch (r) {
-			case 0:
-				setRegister(R0, inp);
-				break;
-			case 0b1:
-				setRegister(R1, inp);
-				break;
-			case 0b10:
-				setRegister(R2, inp);
-				break;
-			case 0b11:
-				setRegister(R3, inp);
-				break;
-
+			int inp = 0;
+			if (dev_id == 0) {
+				inp = MainFrame.getKeyboard();
+				setRegister(getGPR(r), inp);	
 			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.OUT:
 			// devid = 1 printer
-			if (dev_id == 1):
-				// set printer with register values
-
-
+			if (dev_id == 1) {
+				MainFrame.setPrinter(Util.bitSet2Int(getGPR(r)));
+			}
+			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 		}
 		

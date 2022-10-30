@@ -14,8 +14,40 @@ public class Util {
         }
         return intValue;
     }
+	
+	public static int bitSet2IntSigned(BitSet bitSet) {
+        int intValue = 0;
+        boolean sign = bitSet.get(15);
+        bitSet.set(0, false);
+        for (int bit = 0; bit < bitSet.length(); bit++) {
+            if (bitSet.get(bit)) {
+                intValue |= (1 << bit);
+            }
+        }
+        if (sign) {
+        	return -intValue;
+        }
+        return intValue;
+    }
+	
 	public static BitSet int2BitSet(int value) {
 		BitSet bits = new BitSet();
+	    int index = 0;
+	    while (value != 0) {
+	      if (value % 2 != 0) {
+	        bits.set(index);
+	      }
+	      ++index;
+	      value = value >>> 1;
+	    }
+	    return bits;
+	}
+	
+	public static BitSet int2BitSetSigned(int value) {
+		BitSet bits = new BitSet();
+		if (value < 0) {
+			bits.set(15);
+		} 
 	    int index = 0;
 	    while (value != 0) {
 	      if (value % 2 != 0) {

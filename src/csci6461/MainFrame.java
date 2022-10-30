@@ -46,8 +46,7 @@ public class MainFrame extends JFrame {
 	private static JTextField textField_MAR;
 	private static JTextField textField_MBR;
 	private static JTextField textField_IR;
-	
-	private File f = new File("./src/csci6461/input.txt");  
+	 
 	private static JTextField textField_MFR;
 	private static JTextField textField_Priviledged;
 	private static JTextField textField_CC;
@@ -117,10 +116,20 @@ public class MainFrame extends JFrame {
 		reg.setText(result);
 	}
 		
-	public static void getIOText() {
-		String textField_Keyboard.getText()
+	public static int getKeyboard() {
+		String text = textField_Keyboard.getText();
+		int result;
+		try {
+			result = Integer.parseInt(text, 0);
+		} catch (NumberFormatException n) {
+			result = Integer.parseInt(String.valueOf(text.charAt(0)));
+		}
+		return result;
 	}
 	
+	public static void setPrinter(int output) {
+		textField_Printer.setText("" + (char)output);
+	}
 	/**
 	 * Launch the application.
 	 */
