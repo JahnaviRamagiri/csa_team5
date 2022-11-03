@@ -163,7 +163,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		setTitle("Simulator UI");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1219, 729);
+		setBounds(100, 100, 1256, 764);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -489,53 +489,53 @@ public class MainFrame extends JFrame {
 		contentPane.add(CC_Button);
 		
 		textField_Keyboard = new JTextArea();
-		textField_Keyboard.setBounds(798, 534, 121, 24);
+		textField_Keyboard.setBounds(673, 479, 223, 183);
 		contentPane.add(textField_Keyboard);
 		textField_Keyboard.setColumns(10);
 		
 		JLabel lblNewLabel_4 = new JLabel("Keyboard Console");
 		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_4.setBounds(798, 572, 121, 13);
+		lblNewLabel_4.setBounds(673, 672, 223, 13);
 		contentPane.add(lblNewLabel_4);
 		
 		textField_Printer = new JTextArea();
 		textField_Printer.setEditable(false);
 		textField_Printer.setColumns(10);
-		textField_Printer.setBounds(1000, 487, 121, 118);
+		textField_Printer.setBounds(939, 479, 223, 183);
 		contentPane.add(textField_Printer);
 		
 		JLabel lblNewLabel_4_2 = new JLabel("Printer Display");
 		lblNewLabel_4_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_4_2.setBounds(1004, 615, 117, 17);
+		lblNewLabel_4_2.setBounds(939, 670, 223, 17);
 		contentPane.add(lblNewLabel_4_2);
 		
 		textField_Tag = new JTextField();
 		textField_Tag.setBackground(Color.WHITE);
 		textField_Tag.setEditable(false);
-		textField_Tag.setBounds(25, 471, 223, 183);
+		textField_Tag.setBounds(25, 483, 223, 183);
 		contentPane.add(textField_Tag);
 		textField_Tag.setColumns(10);
 		
 		textField_TagValue = new JTextField();
 		textField_TagValue.setBackground(Color.WHITE);
 		textField_TagValue.setEditable(false);
-		textField_TagValue.setBounds(279, 467, 223, 183);
+		textField_TagValue.setBounds(279, 479, 223, 183);
 		contentPane.add(textField_TagValue);
 		textField_TagValue.setColumns(10);
 		
 		JLabel lblNewLabel_5 = new JLabel("CACHE");
 		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_5.setBounds(158, 664, 223, 23);
+		lblNewLabel_5.setBounds(158, 676, 223, 23);
 		contentPane.add(lblNewLabel_5);
 		
 		JLabel lblNewLabel_6 = new JLabel("Tag");
 		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_6.setBounds(25, 448, 223, 13);
+		lblNewLabel_6.setBounds(25, 460, 223, 13);
 		contentPane.add(lblNewLabel_6);
 		
 		JLabel lblNewLabel_6_1 = new JLabel("Value");
 		lblNewLabel_6_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_6_1.setBounds(279, 448, 223, 13);
+		lblNewLabel_6_1.setBounds(279, 460, 223, 13);
 		contentPane.add(lblNewLabel_6_1);
 		
 		JButton Program1_Button = new JButton("Program 1");
