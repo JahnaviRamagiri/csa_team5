@@ -432,21 +432,7 @@ public class Simulator {
 			ea = calculateEA(i, ix, addr);
 
 			// cr is c(r) register content
-			int cr = -1;
-			switch (r) {
-			case 0:
-				cr = Util.bitSet2Int(R0);
-				break;
-			case 0b1:
-				cr = Util.bitSet2Int(R1);
-				break;
-			case 0b10:
-				cr = Util.bitSet2Int(R2);
-				break;
-			case 0b11:
-				cr = Util.bitSet2Int(R3);
-				break;
-			}
+			int cr = Util.bitSet2Int(getGPR(r));
 
 			if (cr == 0) {
 				setRegister(PC, ea); // PC <- EA
