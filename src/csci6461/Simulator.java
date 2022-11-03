@@ -80,7 +80,7 @@ public class Simulator {
 //		I = new Register(1);
 //		ADDR = new Register(5);
 
-		lines = 0;
+		lines = 0; // keep track of lines of instructions read from file
 
 	}
 
@@ -105,7 +105,7 @@ public class Simulator {
 				if (lines == 0) {
 					setRegister(PC, addr);
 				}
-//				instructionAddr.add(addr); // store addresses of instructions
+
 				Word content = Util.int2Word(Integer.parseInt(sa[1].trim(), 16));
 				memory.write(content, addr);
 				lines++;
@@ -123,15 +123,14 @@ public class Simulator {
 		setRegister(X3, 0);
 		setRegister(MAR, 0);
 		setRegister(MBR, 0);
+		setRegister(MFR, 0);
 		setRegister(IR, 0);
 		setRegister(CC, 0);
+		MainFrame.clearPrinter();
 	}
 
 	public int singleStep() {
-//		if (pcx >= instructionAddr.size()) {
-//			System.out.println("All instructions executed");
-//			return 1;
-//		}
+
 		// fetch instruction
 		loadInstruction();
 		// ir decode

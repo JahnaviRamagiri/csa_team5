@@ -4,14 +4,13 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.BitSet;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
@@ -22,6 +21,7 @@ public class MainFrame extends JFrame {
 	
 //	 Initialise memory
 	private static Simulator simulator = Simulator.getInstance();
+	private static Memory memory = Memory.getInstance();
 
 	static int mar;
 	static int mbr;
@@ -132,6 +132,7 @@ public class MainFrame extends JFrame {
 		}
 		if (text.indexOf(",") != -1)
 			text = text.substring(text.indexOf(",") + 1);
+		else text = "";
 		textField_Keyboard.setText(text);
 		return result;
 	}
@@ -489,6 +490,7 @@ public class MainFrame extends JFrame {
 		contentPane.add(CC_Button);
 		
 		textField_Keyboard = new JTextArea();
+		textField_Keyboard.setLineWrap(true);
 		textField_Keyboard.setBounds(673, 479, 223, 183);
 		contentPane.add(textField_Keyboard);
 		textField_Keyboard.setColumns(10);
@@ -500,6 +502,7 @@ public class MainFrame extends JFrame {
 		
 		textField_Printer = new JTextArea();
 		textField_Printer.setEditable(false);
+		textField_Printer.setLineWrap(true);
 		textField_Printer.setColumns(10);
 		textField_Printer.setBounds(939, 479, 223, 183);
 		contentPane.add(textField_Printer);
@@ -545,11 +548,24 @@ public class MainFrame extends JFrame {
 						+ "\n, separated by commas";
 				textField_Printer.setText(textField_Printer.getText() + "\n" + msg);
 				simulator.loadFile("./src/csci6461/program1.txt");
+				// write array to memory
+				for (int i = 0; i < 20; i++) {
+					int k = getKeyboard();
+					memory.write(Util.int2Word(k), 800 + i);
+				}
+				// write search number to memory
+				int k = getKeyboard();
+				memory.write(Util.int2Word(k), 400);
 			}
 		});
 		Program1_Button.setBounds(876, 444, 157, 21);
 		contentPane.add(Program1_Button);
 		
 		simulator.init();
+	}
+
+
+	public static void clearPrinter() {
+		textField_Printer.setText("");
 	}
 }
