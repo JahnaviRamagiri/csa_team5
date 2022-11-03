@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -52,8 +53,8 @@ public class MainFrame extends JFrame {
 	private static JTextField textField_MFR;
 	private static JTextField textField_Priviledged;
 	private static JTextField textField_CC;
-	private static JTextField textField_Keyboard;
-	private static JTextField textField_Printer;
+	private static JTextArea textField_Keyboard;
+	private static JTextArea textField_Printer;
 	private JTextField textField_Tag;
 	private JTextField textField_TagValue;
 	
@@ -122,17 +123,21 @@ public class MainFrame extends JFrame {
 		
 	public static int getKeyboard() {
 		String text = textField_Keyboard.getText();
+		String token = text.split(",")[0]; // get first element
 		int result;
 		try {
-			result = Integer.parseInt(text, 0);
+			result = Integer.parseInt(token);
 		} catch (NumberFormatException n) {
-			result = Integer.parseInt(String.valueOf(text.charAt(0)));
+			result = Integer.parseInt(String.valueOf(token.charAt(0)));
 		}
+		if (text.indexOf(",") != -1)
+			text = text.substring(text.indexOf(",") + 1);
+		textField_Keyboard.setText(text);
 		return result;
 	}
 	
 	public static void setPrinter(int output) {
-		textField_Printer.setText("" + (char)output);
+		textField_Printer.setText(textField_Printer.getText() + "\n" + output);
 	}
 	/**
 	 * Launch the application.
@@ -483,7 +488,7 @@ public class MainFrame extends JFrame {
 		});
 		contentPane.add(CC_Button);
 		
-		textField_Keyboard = new JTextField();
+		textField_Keyboard = new JTextArea();
 		textField_Keyboard.setBounds(798, 534, 121, 24);
 		contentPane.add(textField_Keyboard);
 		textField_Keyboard.setColumns(10);
@@ -493,7 +498,7 @@ public class MainFrame extends JFrame {
 		lblNewLabel_4.setBounds(798, 572, 121, 13);
 		contentPane.add(lblNewLabel_4);
 		
-		textField_Printer = new JTextField();
+		textField_Printer = new JTextArea();
 		textField_Printer.setEditable(false);
 		textField_Printer.setColumns(10);
 		textField_Printer.setBounds(1000, 487, 121, 118);
@@ -536,6 +541,10 @@ public class MainFrame extends JFrame {
 		JButton Program1_Button = new JButton("Program 1");
 		Program1_Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String msg = "Please input 20 numbers and the search number in console keyboard"
+						+ "\n, separated by commas";
+				textField_Printer.setText(textField_Printer.getText() + "\n" + msg);
+				simulator.loadFile("./src/csci6461/program1.txt");
 			}
 		});
 		Program1_Button.setBounds(876, 444, 157, 21);

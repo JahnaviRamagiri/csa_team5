@@ -93,7 +93,7 @@ public class Simulator {
 	public void init() {
 //		instructionAddr.clear();
 		lines = 0;
-		loadFile("./src/csci6461/program1.txt");
+		loadFile("./src/csci6461/boot.txt");
 		try {
 			Scanner s = new Scanner(f);
 			while (s.hasNextLine()) {
