@@ -138,8 +138,12 @@ public class MainFrame extends JFrame {
 	}
 	
 	public static void setPrinter(int output) {
-		textField_Printer.setText(textField_Printer.getText() + "\n" + output);
+		textField_Printer.setText(textField_Printer.getText() + output + '\n');
 	}
+	public static void setPrinter(String output) {
+		textField_Printer.setText(textField_Printer.getText() + output + '\n');
+	}
+	
 	/**
 	 * Launch the application.
 	 */
@@ -544,18 +548,24 @@ public class MainFrame extends JFrame {
 		JButton Program1_Button = new JButton("Program 1");
 		Program1_Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String msg = "Please input 20 numbers and the search number in console keyboard"
-						+ "\n, separated by commas";
-				textField_Printer.setText(textField_Printer.getText() + "\n" + msg);
+				
 				simulator.loadFile("./src/csci6461/program1.txt");
-				// write array to memory
+				
+				String msg = "array of 20 integers:";
+				setPrinter(msg);
+				int k;
+				// write array to memory and print in console output
 				for (int i = 0; i < 20; i++) {
-					int k = getKeyboard();
+					k = getKeyboard();
 					memory.write(Util.int2Word(k), 800 + i);
+					setPrinter(k);
 				}
-				// write search number to memory
-				int k = getKeyboard();
+				// write search number to memory and print in console output
+				k = getKeyboard();
 				memory.write(Util.int2Word(k), 400);
+				setPrinter(k);
+				
+				
 			}
 		});
 		Program1_Button.setBounds(876, 444, 157, 21);
