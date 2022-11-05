@@ -158,15 +158,15 @@ JGE 3,0,next=$55		if R3 is positive skip to next
 010001 11 00 1 10001
 4731
 
-STR 3,0,202			if not R3 = - R3
-000010 11 00 1 01100
-B2C
-SMR 3,0,202
-000101 11 00 1 01100
-172C
-SMR 3,0,202
-000101 11 00 1 01100
-172C
+STR 3,0,201			if not R3 = - R3
+000010 11 00 1 01011
+B2B
+SMR 3,0,201
+000101 11 00 1 01011
+172B
+SMR 3,0,201
+000101 11 00 1 01011
+172B
 
 next:
 JZ 3,0,TERMINATE		if R3 == 0 then terminate; we have found the dest

@@ -553,7 +553,7 @@ public class MainFrame extends JFrame {
 				simulator.init("./src/csci6461/program1.txt");
 				if (textField_Keyboard.getText().isEmpty()) {
 					setPrinter("using default value...\n");
-					textField_Keyboard.setText("17827,8255,23642,1412,870,3177,2639,231,2899,18,1109,31,88,973,100,1281,1241,713,119,240,713");
+					textField_Keyboard.setText("17827,8255,23642,1412,870,3177,2639,231,2899,18,1109,31,88,973,100,1281,1241,713,119,240,5000");
 				}
 					
 				String msg = "Array of 20 integers:\n";
