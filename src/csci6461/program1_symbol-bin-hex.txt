@@ -193,6 +193,14 @@ STR 1,0,202			store closest number at $202
 000010 01 00 1 01100
 92C
 
+AMR 3,0,200 			calculate closest diff
+000100 11 00 1 01010
+132A
+
+STR 3,0,200			store closest diff
+000010 11 00 1 01010
+B2A
+
 SOB 0,0,MAIN_LOOP		decrement R0 and jump to loop start
 010000 00 00 1 01111
 402F
