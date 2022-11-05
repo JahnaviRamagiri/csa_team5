@@ -140,7 +140,6 @@ public class Simulator {
 		while (singleStep() == 0);
 		if (f.getName().equals("program1.txt")) {
 			MainFrame.setPrinter("closest number: " + Util.bitSet2Int(memory.read(202)) + "\n");
-			MainFrame.setPrinter("closest number index: " + (Util.bitSet2Int(memory.read(11))-800) + '\n');
 		}
 		return 1;
 	}
