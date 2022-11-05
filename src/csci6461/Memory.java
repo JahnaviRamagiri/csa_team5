@@ -60,4 +60,8 @@ public class Memory {
 	public void write(Word inp, int address) {
 		memory[address] = inp;
 	}
+	
+	public void write(int inp, int address) {
+		memory[address] = Util.int2Word(inp);
+	}
 }

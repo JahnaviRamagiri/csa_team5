@@ -17,15 +17,17 @@ public class Util {
 	
 	public static int bitSet2IntSigned(BitSet bitSet) {
         int intValue = 0;
+        int maxValue = 1 << bitSet.length()-1;
         boolean sign = bitSet.get(15);
-        bitSet.set(0, false);
+        bitSet.set(15, false);
         for (int bit = 0; bit < bitSet.length(); bit++) {
             if (bitSet.get(bit)) {
                 intValue |= (1 << bit);
             }
         }
         if (sign) {
-        	return -intValue;
+        	bitSet.set(15);
+        	return intValue-maxValue;
         }
         return intValue;
     }
@@ -47,6 +49,7 @@ public class Util {
 		BitSet bits = new BitSet();
 		if (value < 0) {
 			bits.set(15);
+			//value = - 32768 - value; // 2's complement
 		} 
 	    int index = 0;
 	    while (value != 0) {

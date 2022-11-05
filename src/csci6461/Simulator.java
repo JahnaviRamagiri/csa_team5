@@ -25,11 +25,6 @@ public class Simulator {
 	private Register MBR;
 	private Register MFR;
 
-//	private Register OPCODE;
-//	private Register IX;
-//	private Register R;
-//	private Register I;
-//	private Register ADDR;
 	
 	private byte opcode;
 	
@@ -90,10 +85,9 @@ public class Simulator {
 
 	private static Memory memory = Memory.getInstance();
 
-	public void init() {
-//		instructionAddr.clear();
+	public void init(String path) {
 		lines = 0;
-		loadFile("./src/csci6461/boot.txt");
+		loadFile(path);
 		try {
 			Scanner s = new Scanner(f);
 			while (s.hasNextLine()) {
@@ -126,7 +120,7 @@ public class Simulator {
 		setRegister(MFR, 0);
 		setRegister(IR, 0);
 		setRegister(CC, 0);
-		MainFrame.clearPrinter();
+
 	}
 
 	public int singleStep() {
@@ -138,9 +132,17 @@ public class Simulator {
 		int ir = Util.bitSet2Int(IR);
 		irDecode(ir);
 		// operation
-		getInstance().operation();
-
-		return 0;
+		return getInstance().operation();
+		
+	}
+	
+	public int runProgram() {
+		while (singleStep() == 0);
+		if (f.getName().equals("program1.txt")) {
+			MainFrame.setPrinter("closest number: " + Util.bitSet2Int(memory.read(202)) + "\n");
+			MainFrame.setPrinter("closest number index: " + (Util.bitSet2Int(memory.read(11))-800) + '\n');
+		}
+		return 1;
 	}
 
 	public void loadFile(String path) {
@@ -183,7 +185,7 @@ public class Simulator {
 				|| (opcode >= 10 && opcode <= 17)) {
 			r = (byte) Integer.parseInt(ir_binary.substring(6, 8), 2);
 			ix = (byte) Integer.parseInt(ir_binary.substring(8, 10), 2);
-			i = (byte) Integer.parseInt(ir_binary.substring(10), 2);
+			i = (byte) Integer.parseInt(ir_binary.substring(10, 11), 2);
 			addr = (byte) Integer.parseInt(ir_binary.substring(11, 16), 2);
 		} else if (opcode >= 20 &&opcode <= 25) {
 			r = (byte) Integer.parseInt(ir_binary.substring(6, 8), 2);
@@ -200,7 +202,7 @@ public class Simulator {
 
 	}
 
-	public static int calculateEA(byte i, byte ix, byte address) {
+	public int calculateEA(byte i, byte ix, byte address) {
 		int ea = 0; // return value
 		// no indirect
 		if (i == 0) {
@@ -208,7 +210,7 @@ public class Simulator {
 				ea = address;
 				return ea;
 			} else if (ix <= 3 && ix >= 1) {
-				ea = Util.bitSet2Int(memory.read((int) ix)) + address;
+				ea = Util.bitSet2Int(getIXR(ix)) + address;
 				return ea;
 			}
 		}
@@ -218,8 +220,8 @@ public class Simulator {
 				ea = Util.bitSet2Int(memory.read(address));
 				return ea;
 			} else if (ix <= 3 && ix >= 1) {
-				// variable for c(IX) + c(Address Field)
-				int tmpAddr = Util.bitSet2Int(memory.read((int) ix)) + address;
+				// variable for c(IX) + c(Address Field)				
+				int tmpAddr = Util.bitSet2Int(getIXR(ix)) + address;
 				// fetch content at given address
 				ea = Util.bitSet2Int(memory.read(tmpAddr));
 				return ea;
@@ -353,6 +355,17 @@ public class Simulator {
 		}
 		return R0;
 	}
+	public Register getIXR(int ix) {
+		switch (ix) {
+		case 1:
+			return X1;
+		case 2:
+			return X2;
+		case 3:
+			return X3;
+		}
+		return X1;
+	}
 	
 	public void load() {
 		int dataAddr = Util.bitSet2Int(MAR);
@@ -374,60 +387,62 @@ public class Simulator {
 	/**
 	 * 
 	 */
-	public void operation() {
+	public int operation() {
 		int ea;
 
 		switch (opcode) {
 		case OpCodes.LDR:
+			System.out.println("LDR");
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 			int dataAddr = Util.bitSet2Int(MAR);
-			int data = Util.bitSet2Int(memory.read(dataAddr));
-			setRegister(MBR, data);
+			int data = Util.bitSet2IntSigned(memory.read(dataAddr));
+			setRegisterSigned(MBR, data);
 			setRegister(getGPR(r), MBR);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 		case OpCodes.STR:
+			System.out.println("STR");
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
-			setRegister(MBR, getGPR(r));
-			Util.bitSetDeepCopy(MBR, MBR.getSize(), memory.read(ea), 16);
-//		     memory.write(MBR,ea); // register MBR to word
+			setRegisterSigned(MBR, Util.bitSet2IntSigned(getGPR(r)));
+			memory.write(Util.bitSet2IntSigned(MBR), Util.bitSet2Int(MAR));
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
+			System.out.println(Util.bitSet2IntSigned(MBR) + " @ $" + Util.bitSet2Int(MAR));
 			break;
 
 		case OpCodes.LDA:
-
+			System.out.println("LDA");
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
-
 			setRegister(MBR, ea);
-			
 			setRegister(getGPR(r), MBR);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
 		case OpCodes.LDX:
-			ea = calculateEA((byte) 0, ix, addr);
+			System.out.println("LDX");
+			
+			ea = calculateEA((byte) 0, (byte) 0, addr);
 			setRegister(MAR, ea);
 			int dataAddr_1 = Util.bitSet2Int(MAR);
 			int data_1 = Util.bitSet2Int(memory.read(dataAddr_1));
 			setRegister(MBR, data_1);
-			
-			setRegister(getGPR(r), MBR);
+			setRegister(getIXR(ix), MBR);
+			System.out.println(Util.bitSet2Int(getIXR(ix)) + " ea:"+ ea + " dataAddr:" + dataAddr_1);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 		case OpCodes.STX:
+			System.out.println("STX");
 			ea = calculateEA((byte) 0, ix, addr);
 			setRegister(MAR, ea);
-
-			setRegister(MBR, getGPR(r));
-			Util.bitSetDeepCopy(MBR, MBR.getSize(), memory.read(ea), 16);
-			// memory.write(MBR); register MBR to word
+			setRegister(MBR, getIXR(ix));
+			memory.write(Util.bitSet2Int(MBR), Util.bitSet2Int(MAR));
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
 		case OpCodes.JZ:
+			System.out.println("JZ");
 			ea = calculateEA(i, ix, addr);
 
 			// cr is c(r) register content
@@ -441,6 +456,7 @@ public class Simulator {
 			break;
 
 		case OpCodes.JNE:
+			System.out.println("JNE");
 			ea = calculateEA(i, ix, addr);
 
 			// cr is c(r) register content
@@ -454,6 +470,7 @@ public class Simulator {
 			break;
 
 		case OpCodes.JCC:
+			System.out.println("JCC");
 			byte cc = (byte) ((CC.get(3 - r))? 1 : 0); // bitset reverse indexed so 3-r
 			ea = calculateEA(r, ix, addr);
 			if (cc == 1) {
@@ -469,15 +486,15 @@ public class Simulator {
 		// the bit in the Condition Code Register to check
 
 		case OpCodes.JMA:
+			System.out.println("JMA");
 			ea = calculateEA(i, ix, addr);
-
 			// Unconditional Jump To Address
 			// R is ignored in this instruction
-
 			setRegister(PC, ea); // PC <- EA
 			break;
 
 		case OpCodes.JSR:
+			System.out.println("JSR");
 			ea = calculateEA(i, ix, addr);
 
 			// Jump and Save Return Address
@@ -486,16 +503,18 @@ public class Simulator {
 			break;
 
 		case OpCodes.RFS:
+			System.out.println("RFS");
 			setRegister(R0, addr);
 			setRegister(PC, R3);
 			break;
 
 		case OpCodes.SOB:
+			System.out.println("SOB");
 			ea = calculateEA(i, ix, addr);
 			
-			cr = Util.bitSet2Int(getGPR(r));
-			setRegister(getGPR(r), cr - 1);
-
+			cr = Util.bitSet2IntSigned(getGPR(r));
+			setRegisterSigned(getGPR(r), cr - 1);
+			System.out.println(Util.bitSet2IntSigned(getGPR(r)));
 			if (cr >= 0) {
 				setRegister(PC, ea);
 			} else {
@@ -504,12 +523,12 @@ public class Simulator {
 			break;
 
 		case OpCodes.JGE:
-
+			System.out.println("JGE");
 			ea = calculateEA(i, ix, addr);
 			cr = -1;
 
-			cr = Util.bitSet2Int(getGPR(r));
-				
+			cr = Util.bitSet2IntSigned(getGPR(r));
+			System.out.println(cr);
 			if (cr >= 0) {
 				setRegister(PC, ea);
 			} else {
@@ -592,24 +611,28 @@ public class Simulator {
 			break;
 			
 		case OpCodes.AND:
+			System.out.println("AND");
 			getGPR(r).and(getGPR(ry)); 
 			setRegister(getGPR(r), getGPR(r));
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.ORR:
+			System.out.println("ORR");
 			getGPR(r).or(getGPR(ry));
 			setRegister(getGPR(r), getGPR(r));
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.NOT:
+			System.out.println("NOT");
 			getGPR(r).flip(0, getGPR(r).length());
 			setRegister(getGPR(r), getGPR(r));
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.AMR:
+			System.out.println("AMR");
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 			dataAddr = Util.bitSet2Int(MAR);
@@ -621,7 +644,7 @@ public class Simulator {
 			break;
 			
 		case OpCodes.SMR:
-			
+			System.out.println("SMR");
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 			dataAddr = Util.bitSet2Int(MAR);
@@ -629,27 +652,32 @@ public class Simulator {
 			setRegister(MBR, data);
 			
 			result = Util.bitSet2IntSigned(getGPR(r)) - Util.bitSet2IntSigned(MBR);
-			
+			System.out.println(ea + " " +i + " " + ix + " " + addr);
+			System.out.println(data + " @ $" + dataAddr);
+//			System.out.println(Util.bitSet2Int(memory.read(dataAddr+1)) + " @ $" + (dataAddr+1));
+//			System.out.println(Util.bitSet2Int(memory.read(dataAddr+2)) + " @ $" + (dataAddr+2));
+			System.out.println(Util.bitSet2IntSigned(getGPR(r)) + "-" +Util.bitSet2IntSigned(MBR)+"=" + result);
 			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			
 			break;
 
 		case OpCodes.AIR:
-			
+			System.out.println("AIR");
 			result = Util.bitSet2IntSigned(getGPR(r)) + addr;
 			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 
 		case OpCodes.SIR:
-			
+			System.out.println("SIR");
 			result = Util.bitSet2IntSigned(getGPR(r)) - addr;
 			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.SRC:
+			System.out.println("SRC");
 			// arithmetic
 			if (al == 0) {
 				if (lr == 0)
@@ -668,6 +696,7 @@ public class Simulator {
 			break;
 			
 		case OpCodes.RRC:
+			System.out.println("RRC");
 			cr = Util.bitSet2Int(getGPR(r));
 			if (al == 1) {
 				if (lr == 0)
@@ -699,10 +728,12 @@ public class Simulator {
 			break;
 		
 		case OpCodes.HLT:
-			break;
+			System.out.println("HLT");
+			return 1;
+
 		}
 		
-		
+		return 0;
 		
 	}
 

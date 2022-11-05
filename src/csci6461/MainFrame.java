@@ -138,10 +138,10 @@ public class MainFrame extends JFrame {
 	}
 	
 	public static void setPrinter(int output) {
-		textField_Printer.setText(textField_Printer.getText() + output + '\n');
+		textField_Printer.setText(textField_Printer.getText() + output);
 	}
 	public static void setPrinter(String output) {
-		textField_Printer.setText(textField_Printer.getText() + output + '\n');
+		textField_Printer.setText(textField_Printer.getText() + output);
 	}
 	
 	/**
@@ -435,8 +435,7 @@ public class MainFrame extends JFrame {
 		JButton Run_button = new JButton("Run");
 		Run_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				while (simulator.singleStep() == 0) {
-				}
+				simulator.runProgram();
 			}
 		});
 		Run_button.setBounds(1043, 366, 94, 59);
@@ -445,7 +444,7 @@ public class MainFrame extends JFrame {
 		JButton Init_Button = new JButton("INIT");
 		Init_Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				simulator.init();
+				simulator.init("./src/csci6461/boot.txt");
 			}
 		});
 		Init_Button.setBounds(839, 377, 74, 37);
@@ -505,11 +504,14 @@ public class MainFrame extends JFrame {
 		contentPane.add(lblNewLabel_4);
 		
 		textField_Printer = new JTextArea();
+		JScrollPane scrollPane = new JScrollPane (textField_Printer, 
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		textField_Printer.setEditable(false);
 		textField_Printer.setLineWrap(true);
 		textField_Printer.setColumns(10);
-		textField_Printer.setBounds(939, 479, 223, 183);
-		contentPane.add(textField_Printer);
+		scrollPane.setBounds(939, 479, 223, 183);
+		contentPane.add(scrollPane);
+
 		
 		JLabel lblNewLabel_4_2 = new JLabel("Printer Display");
 		lblNewLabel_4_2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -548,30 +550,36 @@ public class MainFrame extends JFrame {
 		JButton Program1_Button = new JButton("Program 1");
 		Program1_Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				simulator.loadFile("./src/csci6461/program1.txt");
-				
-				String msg = "array of 20 integers:";
+				simulator.init("./src/csci6461/program1.txt");
+				if (textField_Keyboard.getText().isEmpty()) {
+					setPrinter("using default value...\n");
+					textField_Keyboard.setText("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,18");
+				}
+					
+				String msg = "Array of 20 integers:\n";
 				setPrinter(msg);
 				int k;
 				// write array to memory and print in console output
 				for (int i = 0; i < 20; i++) {
 					k = getKeyboard();
-					memory.write(Util.int2Word(k), 800 + i);
+					memory.write(Util.int2Word(k), 800 + i + 1);
 					setPrinter(k);
+					if (i < 19) setPrinter(","); 
+					else setPrinter("\n");
 				}
 				// write search number to memory and print in console output
 				k = getKeyboard();
 				memory.write(Util.int2Word(k), 400);
+				msg = "Search number: ";
+				setPrinter(msg);
 				setPrinter(k);
-				
-				
+				setPrinter("\n");
 			}
 		});
 		Program1_Button.setBounds(876, 444, 157, 21);
 		contentPane.add(Program1_Button);
 		
-		simulator.init();
+		simulator.init("./src/csci6461/boot.txt");
 	}
 
 
