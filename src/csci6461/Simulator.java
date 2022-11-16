@@ -33,7 +33,6 @@ public class Simulator {
 	private byte i;
 	private byte addr;
 	
-	//private byte rx;
 	private byte ry;
 	
 	private byte al;
@@ -41,12 +40,10 @@ public class Simulator {
 	private byte count;
 	
 	private byte dev_id;
-//	private byte AL;
-//	private byte LR;
-
-	private File f;
-//	private ArrayList<Integer> instructionAddr = new ArrayList<>();
+	private byte trap_code;
 	
+	private File f;
+	 
 	// an incremental variable to count the number of instructions read
 	private int lines; 
 
@@ -68,12 +65,6 @@ public class Simulator {
 		MAR = new Register(12);
 		MBR = new Register(16);
 		MFR = new Register(4);
-
-//		OPCODE = new Register(6);
-//		IX = new Register(2);
-//		R = new Register(2);
-//		I = new Register(1);
-//		ADDR = new Register(5);
 
 		lines = 0; // keep track of lines of instructions read from file
 
@@ -189,6 +180,8 @@ public class Simulator {
 		} else if (opcode >= 20 &&opcode <= 25) {
 			r = (byte) Integer.parseInt(ir_binary.substring(6, 8), 2);
 			ry = (byte) Integer.parseInt(ir_binary.substring(8, 10), 2);
+		} else if (opcode == 30) {
+			trap_code = (byte) Integer.parseInt(ir_binary.substring(12, 16), 2);
 		} else if (opcode == 31 || opcode == 32) {
 			r = (byte) Integer.parseInt(ir_binary.substring(6, 8), 2);
 			al = (byte) Integer.parseInt(ir_binary.substring(8, 9), 2);
@@ -757,12 +750,23 @@ public class Simulator {
 			}
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
+			
+		case OpCodes.CHK:
+			break;
 		
 		case OpCodes.HLT:
 			System.out.println("HLT");
 			return 1;
 
 		case OpCodes.TRAP:
+			int sub_addr = Util.bitSet2Int(memory.read(0));
+			memory.write(Util.bitSet2Int(PC) + 1, 2);
+			sub_addr += trap_code;
+			setRegister(PC, memory.read(sub_addr));
+			runProgram();
+			setRegister(PC, memory.read(2));
+			break;
+			
 		}
 		
 		
