@@ -35,4 +35,18 @@ public class OpCodes {
 	
 	public static final byte IN = 61;
 	public static final byte OUT = 62;
+	public static final byte CHK = 63;
+	
+	public static final byte TRAP = 30;
+	
+	public static final byte FADD = 33;
+	public static final byte FSUB = 34;
+	public static final byte VADD = 35;
+	public static final byte VSUB = 36;
+	public static final byte CNVRT = 37;
+	public static final byte LDFR = 50;
+	public static final byte STFR = 51;
+
+
+	
 }

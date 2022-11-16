@@ -436,9 +436,7 @@ public class MainFrame extends JFrame {
 		JButton SS_button = new JButton("SS");
 		SS_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (simulator.singleStep() == 1) {
-					SS_button.setEnabled(false);;
-				}
+				simulator.singleStep();
 			}
 		});
 		SS_button.setBounds(939, 366, 94, 59);

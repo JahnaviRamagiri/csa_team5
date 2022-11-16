@@ -762,7 +762,9 @@ public class Simulator {
 			System.out.println("HLT");
 			return 1;
 
+		case OpCodes.TRAP:
 		}
+		
 		
 		return 0;
 		
