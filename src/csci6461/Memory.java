@@ -25,7 +25,10 @@ public class Memory {
 	//	private constructor to prevent initialization from outside the class
 	private Memory() {
 		memory = new Word[4096];
-		Arrays.fill(memory, new Word());
+		for (int i = 0; i < 4096; i++) {
+			memory[i] = new Word();
+		}
+//		Arrays.fill(memory, new Word());
 		cache = new Cache();
 	}
 	public static Memory getInstance() {
@@ -33,8 +36,8 @@ public class Memory {
 	}
 	
 	public Word read(int address) {
+		//return memory[address];
 		return cache.read(address);
-		
 	}
 	
 	private class Cache {
@@ -47,27 +50,30 @@ public class Memory {
 			length = 0;
 		}
 		public void add(int addr, Word cont) {
-			if (length < 16) {
-				address.add(addr);
-				content.add(cont);
-			} else {
+			if (length >= 16) {
 				address.remove(0);
 				content.remove(0);
+				length--;
 			}
+			address.add(Integer.valueOf(addr));
+			content.add(cont);
+			length++;
+			MainFrame.updateCacheUI(address, content);
 		}
 		public Word read(int addr) {
-			for (int i = 0; i < 16; i++) {
-				if (address.get(i) == addr) 
+			for (int i = 0; i < length; i++) {
+				if (address.get(i).intValue() == addr) {
+					// HIT
+					content.set(i, memory[addr]);
 					return content.get(i);
+				}
 			}
+			// MISS
 			this.add(addr, memory[addr]);
 			return memory[addr];
 		}
 		
 	}
-	
-	
-	
 	
 	public void write(Word inp, int address) {
 		memory[address] = inp;

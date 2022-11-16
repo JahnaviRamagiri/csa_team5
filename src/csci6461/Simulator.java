@@ -315,7 +315,7 @@ public class Simulator {
 	public void setRegister(Register r, int content) {
 		BitSet w = Util.int2BitSet(content);
 		Util.bitSetDeepCopy(w, 16, r, r.getSize());
-		MainFrame.updateUI(regName2Str(r), r, r.getSize());
+		MainFrame.updateRegUI(regName2Str(r), r, r.getSize());
 
 	}
 
@@ -328,7 +328,7 @@ public class Simulator {
 	public void setRegisterSigned(Register r, int content) {
 		BitSet w = Util.int2BitSetSigned(content);
 		Util.bitSetDeepCopy(w, 16, r, r.getSize());
-		MainFrame.updateUI(regName2Str(r), r, r.getSize());
+		MainFrame.updateRegUI(regName2Str(r), r, r.getSize());
 	}
 
 	public void setCC(int i, boolean bit) {
@@ -338,7 +338,7 @@ public class Simulator {
 		//DIVZERO = 2
 		//EQUALORNOT = 3
 		CC.set(bitIndex, bit);
-		MainFrame.updateUI("CC", CC, 4);
+		MainFrame.updateRegUI("CC", CC, 4);
 	}
 	
 	public byte getCC(int i) {

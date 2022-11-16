@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
@@ -55,8 +56,8 @@ public class MainFrame extends JFrame {
 	private static JTextField textField_CC;
 	private static JTextArea textField_Keyboard;
 	private static JTextArea textField_Printer;
-	private JTextField textField_Tag;
-	private JTextField textField_TagValue;
+	private static JTextArea textField_Tag;
+	private static JTextArea textField_TagValue;
 	
 	/*
 	 * Method to get the text field object for respective registers
@@ -107,7 +108,7 @@ public class MainFrame extends JFrame {
 	/*
 	 * 
 	 */
-	public static void updateUI(String regStr, BitSet value, int length) {
+	public static void updateRegUI(String regStr, BitSet value, int length) {
 		JTextField reg = getRegisterGUI(regStr);
 		// no update if no corresponding GUI element
 		if (reg == null) {
@@ -119,6 +120,17 @@ public class MainFrame extends JFrame {
 			result = "0" + result;
 		}
 		reg.setText(result);
+	}
+	
+	public static void updateCacheUI(ArrayList<Integer> tag, ArrayList<Word> value) {
+		String strTag = "";
+		String strVal = "";
+		for (int i = 0; i < tag.size(); i++) {
+			strTag += tag.get(i).toString() + '\n';
+			strVal += Util.bitSet2Int(value.get(i)) + "\n";
+		}
+		textField_Tag.setText(strTag);
+		textField_TagValue.setText(strVal);
 	}
 		
 	public static int getKeyboard() {
@@ -518,19 +530,24 @@ public class MainFrame extends JFrame {
 		lblNewLabel_4_2.setBounds(939, 670, 223, 17);
 		contentPane.add(lblNewLabel_4_2);
 		
-		textField_Tag = new JTextField();
+		textField_Tag = new JTextArea();
+		JScrollPane scrollPaneTag = new JScrollPane (textField_Tag, 
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		textField_Tag.setBackground(Color.WHITE);
 		textField_Tag.setEditable(false);
-		textField_Tag.setBounds(25, 483, 223, 183);
-		contentPane.add(textField_Tag);
 		textField_Tag.setColumns(10);
+		scrollPaneTag.setBounds(25, 483, 223, 183);
+		contentPane.add(scrollPaneTag);
 		
-		textField_TagValue = new JTextField();
+		textField_TagValue = new JTextArea();
+		JScrollPane scrollPaneTagValue = new JScrollPane (textField_TagValue, 
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		textField_TagValue.setBackground(Color.WHITE);
 		textField_TagValue.setEditable(false);
-		textField_TagValue.setBounds(279, 479, 223, 183);
-		contentPane.add(textField_TagValue);
 		textField_TagValue.setColumns(10);
+		scrollPaneTagValue.setBounds(279, 483, 223, 183);
+		contentPane.add(scrollPaneTagValue);
+		
 		
 		JLabel lblNewLabel_5 = new JLabel("CACHE");
 		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
