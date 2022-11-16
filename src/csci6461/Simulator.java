@@ -341,6 +341,17 @@ public class Simulator {
 		MainFrame.updateUI("CC", CC, 4);
 	}
 	
+	public byte getCC(int i) {
+		int bitIndex = 3 - i;
+		//OVERFLOW = 0
+		//UNDERFLOW = 1
+		//DIVZERO = 2
+		//EQUALORNOT = 3
+		boolean r = CC.get(bitIndex);
+		if (r) return 1;
+		else return 0;
+	}
+	
 	public Register getGPR(int r) {
 		switch (r) {
 		case 0:
@@ -470,7 +481,7 @@ public class Simulator {
 
 		case OpCodes.JCC:
 			System.out.println("JCC");
-			byte cc = (byte) ((CC.get(3 - r))? 1 : 0); // bitset reverse indexed so 3-r
+			byte cc = getCC(r); 
 			ea = calculateEA(r, ix, addr);
 			if (cc == 1) {
 				setRegister(PC, ea);
@@ -548,7 +559,7 @@ public class Simulator {
 				int lower = result - (upper << 16);
 				
 				if (upper > (2^16 - 1)) {
-					setCC(0, true); // setting OVERFLOW cc(0)
+					setCC(Constants.CC_OVERFLOW, true); // setting OVERFLOW cc(0)
 					upper = upper - ((upper >> 16) << 16);
 				} 
 				
@@ -575,7 +586,7 @@ public class Simulator {
 				cry = Util.bitSet2Int(getGPR(ry));
 				
 				if (cry == 0) {
-					setCC(2, true); // setting DIVZERO
+					setCC(Constants.CC_DIVZERO, true); // setting DIVZERO
 					setRegister(PC, Util.bitSet2Int(PC) + 1);
 					break;
 				} 
@@ -602,9 +613,9 @@ public class Simulator {
 			int crx = Util.bitSet2Int(getGPR(r));
 			int cry = Util.bitSet2Int(getGPR(ry));
 			if (crx == cry) {
-				setCC(3, true); // cc(4) <- 1
+				setCC(Constants.CC_EQUALORNOT, true); // cc(4) <- 1
 			} else {
-				setCC(3, false);
+				setCC(Constants.CC_EQUALORNOT, false);
 			}
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
@@ -653,8 +664,7 @@ public class Simulator {
 			result = Util.bitSet2IntSigned(getGPR(r)) - Util.bitSet2IntSigned(MBR);
 			System.out.println(ea + " " +i + " " + ix + " " + addr);
 			System.out.println(data + " @ $" + dataAddr);
-//			System.out.println(Util.bitSet2Int(memory.read(dataAddr+1)) + " @ $" + (dataAddr+1));
-//			System.out.println(Util.bitSet2Int(memory.read(dataAddr+2)) + " @ $" + (dataAddr+2));
+
 			System.out.println(Util.bitSet2IntSigned(getGPR(r)) + "-" +Util.bitSet2IntSigned(MBR)+"=" + result);
 			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
@@ -679,17 +689,39 @@ public class Simulator {
 			System.out.println("SRC");
 			// arithmetic
 			if (al == 0) {
-				if (lr == 0)
-					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) << count);
-				else if (lr == 1)
-					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >> count);
+				if (lr == 0) {
+					result = Util.bitSet2IntSigned(getGPR(r)) << count;
+					if (result > Constants.SIGNED_MAX || result < Constants.SIGNED_MIN) {
+						setCC(Constants.CC_OVERFLOW, true);
+					}
+					setRegisterSigned(getGPR(r), result);
+				}
+					
+				else if (lr == 1) {
+					result = Util.bitSet2IntSigned(getGPR(r)) >> count;
+					if (Util.bitSet2IntSigned(getGPR(r)) != (result << count)) {
+						setCC(Constants.CC_UNDERFLOW, true);
+					}
+					setRegisterSigned(getGPR(r), result);
+				}
+					
 			}
 			// logical
 			else if (al == 1) {
-				if (lr == 0)
-					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) << count);
-				else if (lr == 1)
-					setRegister(getGPR(r), Util.bitSet2Int(getGPR(r)) >>> count);
+				if (lr == 0) {
+					result = Util.bitSet2Int(getGPR(r)) << count;
+					if (result > Constants.UNSIGNED_MAX) {
+						setCC(Constants.CC_OVERFLOW, true);
+					}
+					setRegister(getGPR(r), result);
+				}
+				else if (lr == 1) {
+					result = Util.bitSet2Int(getGPR(r)) >>> count;
+					if (Util.bitSet2Int(getGPR(r)) != (result << count)) {
+						setCC(Constants.CC_UNDERFLOW, true);
+					}
+					setRegister(getGPR(r), result);
+				}
 			}
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
