@@ -5,6 +5,7 @@ package csci6461;
 
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.ArrayList;
 
 
 /**
@@ -19,43 +20,54 @@ public class Memory {
 	
 	private static final Memory INSTANCE = new Memory();
 	private static Word[] memory;
-	private static int[] cache_addr;
-	private static Word[] cache_cont;
+	private static Cache cache;
 	
 	//	private constructor to prevent initialization from outside the class
 	private Memory() {
 		memory = new Word[4096];
 		Arrays.fill(memory, new Word());
-		cache_addr = new int[16];
-		cache_cont = new Word[16];
+		cache = new Cache();
 	}
 	public static Memory getInstance() {
 		return INSTANCE;
 	}
 	
 	public Word read(int address) {
-		return memory[address];
+		return cache.read(address);
 		
 	}
 	
-	private static int find(int addr) {
-		for (int i = 0; i < 16; i++) {
-			if (cache_addr[i] == addr) 
-				return i;
+	private class Cache {
+		public ArrayList<Integer> address;
+		public ArrayList<Word> content;
+		public int length;
+		public Cache() {
+			address = new ArrayList<>();
+			content = new ArrayList<>();
+			length = 0;
 		}
-		return -1;
-	}
-	
-	public Word readFromCache(int address) {
-		int index = find(address);
-		if (index != -1) {
-			return cache_cont[index];
-		} 
-		cache_cont[0] = memory[address];
-		cache_addr[0] = address;
-		return cache_cont[0];
+		public void add(int addr, Word cont) {
+			if (length < 16) {
+				address.add(addr);
+				content.add(cont);
+			} else {
+				address.remove(0);
+				content.remove(0);
+			}
+		}
+		public Word read(int addr) {
+			for (int i = 0; i < 16; i++) {
+				if (address.get(i) == addr) 
+					return content.get(i);
+			}
+			this.add(addr, memory[addr]);
+			return memory[addr];
+		}
 		
 	}
+	
+	
+	
 	
 	public void write(Word inp, int address) {
 		memory[address] = inp;
