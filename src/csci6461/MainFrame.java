@@ -595,6 +595,20 @@ public class MainFrame extends JFrame {
 		contentPane.add(Program1_Button);
 		
 		JButton Program2_Button = new JButton("Program 2");
+		Program1_Button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				simulator.init("./src/csci6461/program2.txt");
+				if (textField_Keyboard.getText().isEmpty()) {
+					setPrinter("Using default value...\n");
+					textField_Keyboard.setText("Courage and stupidity were all he had."
+							+ "The thunderous roar of the jet overhead confirmed her worst fears."
+							+ "He had concluded that pigs must be able to fly in Hog Heaven."
+							+ "Peanuts don't grow on trees, but cashews do."
+							+ "He picked up trash in his spare time to dump in his neighbor's yard."
+							+ "It's difficult to understand the lengths he'd go to remain short.");
+				}
+			}
+		});
 		Program2_Button.setBounds(980, 448, 157, 21);
 		contentPane.add(Program2_Button);
 		
