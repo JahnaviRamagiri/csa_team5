@@ -591,8 +591,12 @@ public class MainFrame extends JFrame {
 				setPrinter("\n");
 			}
 		});
-		Program1_Button.setBounds(876, 444, 157, 21);
+		Program1_Button.setBounds(758, 444, 157, 21);
 		contentPane.add(Program1_Button);
+		
+		JButton Program2_Button = new JButton("Program 2");
+		Program2_Button.setBounds(980, 448, 157, 21);
+		contentPane.add(Program2_Button);
 		
 		simulator.init("./src/csci6461/boot.txt");
 	}
