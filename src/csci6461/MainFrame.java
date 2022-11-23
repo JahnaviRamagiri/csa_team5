@@ -615,7 +615,7 @@ public class MainFrame extends JFrame {
 					int c = input.charAt(i);
 					memory.write(Util.int2Word(c), 800 + i);
 				}
-				memory.write(Util.int2Word(input.length()), 36);
+				memory.write(Util.int2Word(input.length()+ 800), 36);
 				
 				// store search word
 				textField_Keyboard.setText("");
@@ -625,7 +625,7 @@ public class MainFrame extends JFrame {
 					int c = searchWord.charAt(i);
 					memory.write(Util.int2Word(c), 700 + i);
 				}
-				memory.write(Util.int2Word(input.length()), 35);
+				memory.write(Util.int2Word(searchWord.length() + 700), 35);
 				setPrinter(searchWord);
 				setPrinter("\n");
 				
