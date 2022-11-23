@@ -595,18 +595,40 @@ public class MainFrame extends JFrame {
 		contentPane.add(Program1_Button);
 		
 		JButton Program2_Button = new JButton("Program 2");
-		Program1_Button.addActionListener(new ActionListener() {
+		Program2_Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				simulator.init("./src/csci6461/program2.txt");
+				// store input paragraph
 				if (textField_Keyboard.getText().isEmpty()) {
 					setPrinter("Using default value...\n");
-					textField_Keyboard.setText("Courage and stupidity were all he had."
+					String defaultInput = "Courage and stupidity were all he had."
 							+ "The thunderous roar of the jet overhead confirmed her worst fears."
 							+ "He had concluded that pigs must be able to fly in Hog Heaven."
 							+ "Peanuts don't grow on trees, but cashews do."
 							+ "He picked up trash in his spare time to dump in his neighbor's yard."
-							+ "It's difficult to understand the lengths he'd go to remain short.");
+							+ "It's difficult to understand the lengths he'd go to remain short.";
+					textField_Keyboard.setText(defaultInput);
 				}
+				String input = textField_Keyboard.getText();
+				setPrinter(input + '\n');
+				for (int i = 0; i < input.length(); i++) {
+					int c = input.charAt(i);
+					memory.write(Util.int2Word(c), 800 + i);
+				}
+				memory.write(Util.int2Word(input.length()), 36);
+				
+				// store search word
+				textField_Keyboard.setText("");
+				setPrinter("Search word: ");
+				String searchWord = "trees";
+				for (int i = 0; i < searchWord.length(); i++) {
+					int c = searchWord.charAt(i);
+					memory.write(Util.int2Word(c), 700 + i);
+				}
+				memory.write(Util.int2Word(input.length()), 35);
+				setPrinter(searchWord);
+				setPrinter("\n");
+				
 			}
 		});
 		Program2_Button.setBounds(980, 448, 157, 21);
