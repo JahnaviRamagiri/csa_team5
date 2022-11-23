@@ -132,6 +132,14 @@ public class Simulator {
 		if (f.getName().equals("program1.txt")) {
 			MainFrame.setPrinter("closest number: " + Util.bitSet2Int(memory.read(202)) + "\n");
 		}
+		if (f.getName().equals("program2.txt")) {
+			int i_word = Util.bitSet2Int(memory.read(30));
+			int i_sentence = Util.bitSet2Int(memory.read(31));
+			if (i_word == 0 || i_sentence == 0) {
+				MainFrame.setPrinter("Word not found.");
+			}
+			MainFrame.setPrinter("Word found at sentence " + i_sentence + ", word " + i_word + "\n");
+		}
 		return 1;
 	}
 
@@ -395,7 +403,6 @@ public class Simulator {
 
 		switch (opcode) {
 		case OpCodes.LDR:
-			System.out.println("LDR");
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 			int dataAddr = Util.bitSet2Int(MAR);
@@ -403,6 +410,7 @@ public class Simulator {
 			setRegisterSigned(MBR, data);
 			setRegister(getGPR(r), MBR);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
+			System.out.println("LDR R" + r + ", @$" + dataAddr);
 			break;
 		case OpCodes.STR:
 			System.out.println("STR");
@@ -669,6 +677,7 @@ public class Simulator {
 			result = Util.bitSet2IntSigned(getGPR(r)) + addr;
 			setRegisterSigned(getGPR(r), result);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
+			System.out.println(Util.bitSet2IntSigned(getGPR(r)) + " + " + addr + " = " + result);
 			break;
 
 		case OpCodes.SIR:

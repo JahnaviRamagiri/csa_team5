@@ -620,7 +620,7 @@ public class MainFrame extends JFrame {
 				// store search word
 				textField_Keyboard.setText("");
 				setPrinter("Search word: ");
-				String searchWord = "trees";
+				String searchWord = "and";
 				for (int i = 0; i < searchWord.length(); i++) {
 					int c = searchWord.charAt(i);
 					memory.write(Util.int2Word(c), 700 + i);
