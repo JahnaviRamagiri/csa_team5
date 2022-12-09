@@ -75,6 +75,22 @@ public class Util {
 	    }
 	    return w;
 	}
+	public static Word int2WordSigned(int value) {
+		Word bits = new Word();
+		if (value < 0) {
+			bits.set(15);
+			//value = - 32768 - value; // 2's complement
+		} 
+	    int index = 0;
+	    while (value != 0) {
+	      if (value % 2 != 0) {
+	        bits.set(index);
+	      }
+	      ++index;
+	      value = value >>> 1;
+	    }
+	    return bits;
+	}
 	public static void bitSetDeepCopy(BitSet source, int sourceBits,
 			BitSet destination, int destinationBits) {
 		if (sourceBits <= destinationBits) {
