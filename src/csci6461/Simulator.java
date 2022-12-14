@@ -79,7 +79,29 @@ public class Simulator {
 
 	private static Memory memory = Memory.getInstance();
 
+	BitSet Str2BitSet(String s) {
+		assert(s.length() == 16);
+		BitSet b = new BitSet();
+		for (int i = 0; i < 16; i++) {
+			if (s.charAt(i) == '1') b.set(15 - i);
+		}
+		return b;
+	}
+	void BitSet2Str(BitSet bs) {
+		for (int i = 0 ; i < 16; i++) {
+			if (bs.get(15- i)) System.out.print('1');
+			else System.out.print('0');
+		}
+	}
+	
 	public void init(String path) {
+		BitSet bs = Str2BitSet("0001010111111110");
+		BitSet2Str(bs);
+		System.out.println();
+		float flt = Util.bitSet2Float(bs);
+		System.out.println(flt);
+		bs = Util.float2BitSet(flt);
+		BitSet2Str(bs);
 		lines = 0;
 		loadFile(path);
 		try {
@@ -788,29 +810,29 @@ public class Simulator {
 			break;
 
 		case OpCodes.FADD:
-			int fr = Util.bitSet2IntSigned(getFR(r));
+			float fr = Util.bitSet2Float(getFR(r));
 			ea = calculateEA(i, ix, addr);
-			result = fr + Util.bitSet2IntSigned(memory.read(ea));
-			if (result > Constants.SIGNED_MAX) {
+			float float_result = fr + Util.bitSet2Float(memory.read(ea));
+			if (float_result > Constants.FLOAT_MAX) {
 				setCC(Constants.CC_OVERFLOW, true);
 			}
-			setRegisterSigned(getFR(r), result);
+			setRegister(getFR(r), Util.float2BitSet(float_result));
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.FSUB:
-			fr = Util.bitSet2IntSigned(getFR(r));
+			fr = Util.bitSet2Float(getFR(r));
 			ea = calculateEA(i, ix, addr);
-			result = fr - Util.bitSet2IntSigned(memory.read(ea));
-			if (result < Constants.SIGNED_MIN) {
+			float_result = fr + Util.bitSet2Float(memory.read(ea));
+			if (float_result > Constants.FLOAT_MAX) {
 				setCC(Constants.CC_OVERFLOW, true);
 			}
-			setRegisterSigned(getFR(r), result);
+			setRegister(getFR(r), Util.float2BitSet(float_result));
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
 		case OpCodes.VADD:
-			fr = Util.bitSet2IntSigned(getFR(r));
+			fr = Util.bitSet2Int(getFR(r));
 			ea = calculateEA(i, ix, addr);
 			int v1_addr = Util.bitSet2Int(memory.read(ea));
 			int v2_addr = Util.bitSet2Int(memory.read(ea + 1));
@@ -824,7 +846,7 @@ public class Simulator {
 			break;
 			
 		case OpCodes.VSUB:
-			fr = Util.bitSet2IntSigned(getFR(r));
+			fr = Util.bitSet2Int(getFR(r));
 			ea = calculateEA(i, ix, addr);
 			v1_addr = Util.bitSet2Int(memory.read(ea));
 			v2_addr = Util.bitSet2Int(memory.read(ea + 1));
@@ -854,8 +876,8 @@ public class Simulator {
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
 			dataAddr = Util.bitSet2Int(MAR);
-			data = Util.bitSet2IntSigned(memory.read(dataAddr));
-			setRegisterSigned(MBR, data);
+			data = Util.bitSet2Int(memory.read(dataAddr));
+			setRegister(MBR, data);
 			setRegister(getFR(r), MBR);
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
@@ -863,8 +885,8 @@ public class Simulator {
 		case OpCodes.STFR:
 			ea = calculateEA(i, ix, addr);
 			setRegister(MAR, ea);
-			setRegisterSigned(MBR, Util.bitSet2IntSigned(getFR(r)));
-			memory.write(Util.bitSet2IntSigned(MBR), Util.bitSet2Int(MAR));
+			setRegister(MBR, Util.bitSet2Int(getFR(r)));
+			memory.write(Util.bitSet2Int(MBR), Util.bitSet2Int(MAR));
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 		}
