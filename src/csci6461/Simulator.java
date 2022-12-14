@@ -174,8 +174,7 @@ public class Simulator {
 	}
 
 	public int runProgram() {
-		while (singleStep() == 0)
-			;
+		while (singleStep() == 0);
 		if (f.getName().equals("program1.txt")) {
 			MainFrame.setPrinter("closest number: " + Util.bitSet2Int(memory.read(202)) + "\n");
 		}
@@ -186,6 +185,19 @@ public class Simulator {
 				MainFrame.setPrinter("Word not found.");
 			}
 			MainFrame.setPrinter("Word found at sentence " + i_sentence + ", word " + i_word + "\n");
+		}
+		if (f.getName().equals("program3.txt")) {
+			float fadd = Util.bitSet2Float(memory.read(15));
+			float fsub = Util.bitSet2Float(memory.read(16));
+			int fixed = Util.bitSet2Int(memory.read(17));
+			float floating = Util.bitSet2Float(memory.read(18));
+			MainFrame.setPrinter("FADD: 5.078125 + 6.375 = " + fadd + "\n");
+			MainFrame.setPrinter("FSUB: 5.078125 - 6.375 = " + fsub + "\n");
+			MainFrame.setPrinter("CNVRT to fixed " + fixed + "\n");
+			MainFrame.setPrinter("CNVRT to floating " + floating + "\n");
+//			int v1[] = {153,506,12,521,3,914};
+//			int v2[] = {556,268,12,243,521};
+//			MainFrame.setPrinter("VADD");
 		}
 		return 1;
 	}
@@ -855,12 +867,15 @@ public class Simulator {
 			ea = calculateEA(i, ix, addr);
 			int v1_addr = Util.bitSet2Int(memory.read(ea));
 			int v2_addr = Util.bitSet2Int(memory.read(ea + 1));
+			MainFrame.setPrinter("VADD:\n");
 			for (int i = 0; i < fr; i++) {
 				int v1_val = Util.bitSet2Int(memory.read(v1_addr + i));
 				int v2_val = Util.bitSet2Int(memory.read(v2_addr + i));
 				result = v1_val + v2_val;
 				memory.write(Util.int2WordSigned(result), v1_addr + i);
+				MainFrame.setPrinter(v1_val+" + "+v2_val +"\t= " + result + "\n");
 			}
+			
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
 			
@@ -869,11 +884,13 @@ public class Simulator {
 			ea = calculateEA(i, ix, addr);
 			v1_addr = Util.bitSet2Int(memory.read(ea));
 			v2_addr = Util.bitSet2Int(memory.read(ea + 1));
+			MainFrame.setPrinter("VSUB:\n");
 			for (int i = 0; i < fr; i++) {
 				int v1_val = Util.bitSet2Int(memory.read(v1_addr + i));
 				int v2_val = Util.bitSet2Int(memory.read(v2_addr + i));
 				result = v1_val - v2_val;
 				memory.write(Util.int2WordSigned(result), v1_addr + i);
+				MainFrame.setPrinter(v1_val+" - "+v2_val +"\t= " + result + "\n");
 			}
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;
@@ -882,11 +899,14 @@ public class Simulator {
 			int f = Util.bitSet2Int(getGPR(r));
 			ea = calculateEA(i, ix, addr);
 			if (f == 0) {
-				result = Util.bitSet2IntSigned(memory.read(ea));
-				result = (result >> 8) << 8;
+				float_result = Util.bitSet2Float(memory.read(ea));
+				
+				result =(int)float_result;
+				
 				setRegister(getGPR(r), result);
 			} else if (f == 1) {
-				setRegister(FR0, memory.read(ea));
+				float_result = Util.bitSet2Int(memory.read(ea));
+				setRegister(FR0, Util.float2BitSet(float_result));
 			}
 			setRegister(PC, Util.bitSet2Int(PC) + 1);
 			break;

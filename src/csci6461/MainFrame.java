@@ -678,6 +678,12 @@ public class MainFrame extends JFrame {
 		
 		JButton Program3_Button = new JButton("Program 3");
 		Program3_Button.setBounds(1075, 409, 157, 21);
+		Program3_Button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				simulator.init("./src/csci6461/program3.txt");
+
+			}
+		});
 		contentPane.add(Program3_Button);
 		
 		simulator.init("./src/csci6461/boot.txt");
