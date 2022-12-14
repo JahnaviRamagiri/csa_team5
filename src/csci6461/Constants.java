@@ -1,5 +1,11 @@
 package csci6461;
 
+/**
+ * Class defines Constants used in the simulator design
+ * 
+ * @author Sitong Liu
+ *
+ */
 public class Constants {
 	public static final int UNSIGNED_MAX = 65535;
 	public static final int SIGNED_MAX = 32767;

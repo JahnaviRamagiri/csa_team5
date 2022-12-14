@@ -1,5 +1,12 @@
 package csci6461;
 
+/**
+ * Contains opcodes for the simulator.
+ * 
+ * 
+ * @author Sitong Liu
+ *
+ */
 public class OpCodes {
 	public static final byte HLT = 00;
 	

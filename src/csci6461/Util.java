@@ -2,6 +2,13 @@ package csci6461;
 
 import java.util.BitSet;
 
+
+/**
+ * General Purpose utility class to implement BitSet and word conversions
+ * 
+ * @author Sitong Liu
+ *
+ */
 public class Util {
 	
 		

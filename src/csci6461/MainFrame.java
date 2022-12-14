@@ -107,8 +107,12 @@ public class MainFrame extends JFrame {
 	}
 	
 	
-	/*
+	/**
+	 * Method to update Registers display on UI
 	 * 
+	 * @param regStr
+	 * @param value
+	 * @param length
 	 */
 	public static void updateRegUI(String regStr, BitSet value, int length) {
 		JTextField reg = getRegisterGUI(regStr);
@@ -124,6 +128,12 @@ public class MainFrame extends JFrame {
 		reg.setText(result);
 	}
 	
+	/**
+	 * Method to update Cache on UI
+	 * 
+	 * @param tag
+	 * @param value
+	 */
 	public static void updateCacheUI(ArrayList<Integer> tag, ArrayList<Word> value) {
 		String strTag = "";
 		String strVal = "";
@@ -134,7 +144,11 @@ public class MainFrame extends JFrame {
 		textField_Tag.setText(strTag);
 		textField_TagValue.setText(strVal);
 	}
-		
+	
+	/**
+	 * Method to Get input from UI keyboard
+	 * @return
+	 */
 	public static int getKeyboard() {
 		String text = textField_Keyboard.getText();
 		String token = text.split(",")[0]; // get first element
@@ -151,9 +165,17 @@ public class MainFrame extends JFrame {
 		return result;
 	}
 	
+	/**
+	 * Method to set printer on UI using integer output
+	 * @param output
+	 */
 	public static void setPrinter(int output) {
 		textField_Printer.setText(textField_Printer.getText() + output);
 	}
+	/**
+	 * Method to set printer on UI using string output
+	 * @param output
+	 */
 	public static void setPrinter(String output) {
 		textField_Printer.setText(textField_Printer.getText() + output);
 	}

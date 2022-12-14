@@ -2,6 +2,7 @@ package csci6461;
 
 import java.util.BitSet;
 
+
 public class Register extends BitSet {
 
 	/**
