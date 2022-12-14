@@ -92,16 +92,35 @@ public class Simulator {
 			if (bs.get(15- i)) System.out.print('1');
 			else System.out.print('0');
 		}
+		System.out.println();
+	}
+	
+	void test() {
+		float[] flt = {
+			5.09f,
+			6.39f,
+			3.20f,
+			7.92f,
+			2.10f,
+			8.29f,
+			1.29f,
+			9.39f,
+			4.20f,
+			2.10f,
+			3.90f,
+			8.29f
+		};
+		for (int i = 0; i< 12; i++) {
+			BitSet bs = Util.float2BitSet(flt[i]);
+			BitSet2Str(bs);
+			float f = Util.bitSet2Float(bs);
+			System.out.println(f);
+		}
+		
 	}
 	
 	public void init(String path) {
-		BitSet bs = Str2BitSet("0001010111111110");
-		BitSet2Str(bs);
-		System.out.println();
-		float flt = Util.bitSet2Float(bs);
-		System.out.println(flt);
-		bs = Util.float2BitSet(flt);
-		BitSet2Str(bs);
+		//test();
 		lines = 0;
 		loadFile(path);
 		try {
